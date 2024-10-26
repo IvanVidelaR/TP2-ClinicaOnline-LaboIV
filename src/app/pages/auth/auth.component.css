@@ -11,9 +11,12 @@
 .auth__form-container {
     margin-right: auto;
     width: 50%;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    align-items: center;
+    justify-content: flex-start; 
+    height: 100%;
 }
 
 .auth__img-container {

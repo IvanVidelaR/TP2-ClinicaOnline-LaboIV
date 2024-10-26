@@ -22,13 +22,13 @@
                 </div>
             </div>
 
-            <!-- Input Nombre -->
+            <!-- Input Apellido -->
             <div class="auth__form-input form-floating position-relative">
-                <input type="text" class="form-control" id="floatingName" 
+                <input type="text" class="form-control" id="floatingApellido" 
                 placeholder="name"
                     [formControl]="form.controls.apellido"
                     [ngClass]="{ 'is-invalid': form.controls.apellido.invalid && form.controls.apellido.touched }">
-                <label for="floatingName">Apellido</label>
+                <label for="floatingApellido">Apellido</label>
                 <!-- <i class="fas fa-envelope"></i> -->
                 <div class="invalid-feedback">
                     @if (form.controls.apellido.invalid && form.controls.apellido.touched) {
@@ -39,6 +39,40 @@
                 </div>
             </div>
 
+            <!-- Input Edad -->
+            <div class="auth__form-input form-floating position-relative">
+                <input type="number" class="form-control" id="floatingEdad" 
+                placeholder="name"
+                    [formControl]="form.controls.edad"
+                    [ngClass]="{ 'is-invalid': form.controls.edad.invalid && form.controls.edad.touched }">
+                <label for="floatingEdad">Edad</label>
+                <!-- <i class="fas fa-envelope"></i> -->
+                <div class="invalid-feedback">
+                    @if (form.controls.edad.invalid && form.controls.edad.touched) {
+                        <p>
+                            <span>La edad es requerida.</span>
+                        </p>
+                    }
+                </div>
+            </div>
+
+            <!-- Input DNI -->
+            <div class="auth__form-input form-floating position-relative">
+                <input type="number" class="form-control" id="floatingDNI" 
+                placeholder="name"
+                    [formControl]="form.controls.dni"
+                    [ngClass]="{ 'is-invalid': form.controls.dni.invalid && form.controls.dni.touched }">
+                <label for="floatingDNI">DNI</label>
+                <!-- <i class="fas fa-envelope"></i> -->
+                <div class="invalid-feedback">
+                    @if (form.controls.dni.invalid && form.controls.dni.touched) {
+                        <p>
+                            <span>El DNI es requerido.</span>
+                        </p>
+                    }
+                </div>
+            </div>
+            
             <!-- Input Correo -->
             <div class="auth__form-input form-floating position-relative">
                 <input type="email" class="form-control" id="floatingEmail" placeholder="name@example.com"
@@ -90,7 +124,102 @@
                     }
                 </div>
             </div>
+            
+            <!-- Input Imagen Perfil -->
+            <div class="auth__form-input form-floating position-relative">
+                <input type="file" class="form-control" id="floatingImagenDePerfil" 
+                placeholder="name"
+                    [formControl]="form.controls.imagenDePerfil"
+                    [ngClass]="{ 'is-invalid': form.controls.imagenDePerfil.invalid && form.controls.imagenDePerfil.touched }">
+                <label for="floatingImagenDePerfil">Imagen de perfil</label>
+                <!-- <i class="fas fa-envelope"></i> -->
+                <div class="invalid-feedback">
+                    @if (form.controls.imagenDePerfil.invalid && form.controls.imagenDePerfil.touched) {
+                        <p>
+                            <span>La imagen de perfil es requerida.</span>
+                        </p>
+                    }
+                </div>
+            </div>
 
+            @if(perfil == 'especialista')
+            {
+                <div class="auth__form-input form-floating position-relative">
+                    <select class="form-control" id="floatingEspecialidad" 
+                        [formControl]="form.controls.especialidad"
+                        [ngClass]="{ 'is-invalid': form.controls.especialidad.invalid && form.controls.especialidad.touched }"
+                        (change)="onSpecialtyChange($event)">
+                        <option value="" disabled selected>Selecciona una especialidad</option>
+                        @for (especialidad of especialidades; track $index) 
+                        {
+                            <option [value]="especialidad">{{ especialidad }}</option>
+                        }
+                        <option value="otra">Otra</option>
+                    </select>
+                    <label for="floatingEspecialidad">Especialidad</label>
+                    <div class="invalid-feedback"> 
+                        @if (form.controls.especialidad.invalid && form.controls.especialidad.touched) {
+                            <p>
+                                <span>La especialidad es requerida.</span>
+                            </p>
+                        }
+                    </div>
+                </div>
+
+                @if(isOtherSpecialty)
+                {
+                    <div class="auth__form-input form-floating position-relative">
+                        <input type="text" class="form-control" id="floatingOtraEspecialidad" 
+                        placeholder="name"
+                            [formControl]="form.controls.otraEspecialidad"
+                            [ngClass]="{ 'is-invalid': form.controls.otraEspecialidad.invalid && form.controls.otraEspecialidad.touched }">
+                        <label for="floatingOtraEspecialidad">Otra especialidad</label>
+                        <div class="invalid-feedback">
+                            @if (isOtherSpecialty && form.controls.otraEspecialidad.invalid && form.controls.otraEspecialidad.touched) {
+                                <p>
+                                    <span>Especifica una especialidad válida.</span>
+                                </p>
+                            }
+                        </div>
+                    </div>
+                }
+            }
+            @else if (perfil == 'paciente') 
+            {
+                <!-- Input Imagen Perfil -->
+                <div class="auth__form-input form-floating position-relative">
+                    <input type="file" class="form-control" id="floatingSegundaImagenDePerfil" 
+                    placeholder="name"
+                        [formControl]="form.controls.segundaImagenDePerfil"
+                        [ngClass]="{ 'is-invalid': form.controls.segundaImagenDePerfil.invalid && form.controls.segundaImagenDePerfil.touched }">
+                    <label for="floatingSegundaImagenDePerfil">Segunda imagen de perfil</label>
+                    <!-- <i class="fas fa-envelope"></i> -->
+                    <div class="invalid-feedback">
+                        @if (form.controls.segundaImagenDePerfil.invalid && form.controls.segundaImagenDePerfil.touched) {
+                            <p>
+                                <span>La segunda imagen de perfil es requerida.</span>
+                            </p>
+                        }
+                    </div>
+                </div>
+
+                <div class="auth__form-input form-floating position-relative">
+                    <input type="text" class="form-control" id="floatingObraSocial" 
+                    placeholder="name"
+                        [formControl]="form.controls.obraSocial"
+                        [ngClass]="{ 'is-invalid': form.controls.obraSocial.invalid && form.controls.obraSocial.touched }">
+                    <label for="floatingObraSocial">Obra social</label>
+                    <!-- <i class="fas fa-envelope"></i> -->
+                    <div class="invalid-feedback">
+                        @if (form.controls.obraSocial.invalid && form.controls.obraSocial.touched) {
+                            <p>
+                                <span>La obra social es requerida.</span>
+                            </p>
+                        }
+                    </div>
+                </div>
+            }
+            
             <!-- Botón de Iniciar Sesión -->
             <p class="auth__create-account">¿Ya tienes una cuenta? <span routerLink="/auth">Iniciar Sesión</span></p>
             <button class="w-100 btn btn-lg btn-dark mt-3" type="submit">Crear Cuenta</button>

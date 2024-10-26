@@ -1,0 +1,26 @@
+<div class="eleccion-perfil__container">
+    <div class="eleccion-perfil__form-container">
+        <div class="eleccion-perfil__form">
+            <img class="eleccion-perfil__logo" src="banners/logo.png" alt="logo_clinica">
+            <h1 class="eleccion-perfil__titulo display-5 h3 fw-normal text-center">¡Bienvenido a Clínica Online!</h1>
+            <h2 class="eleccion-perfil__subtitulo text-center">Elija un perfil</h2>
+            <div class="eleccion-perfil__perfiles">
+                <div class="eleccion-perfil__perfil-paciente perfil-container" 
+                [routerLink]="['/sign-up', {perfil: 'paciente'}]">
+                    <img src="perfiles/paciente.png" alt="paciente" class="img-perfil">
+                    <p class="descripcion-perfil text-center">Paciente</p>
+                </div>
+                <div class="eleccion-perfil__perfil-especialista perfil-container" 
+                [routerLink]="['/sign-up', {perfil: 'especialista'}]">
+                    <img src="perfiles/especialista.png" alt="especialista" class="img-perfil">
+                    <p class="descripcion-perfil text-center">Especialista</p>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <div class="eleccion-perfil__img-container">
+        <img class="eleccion-perfil__img" src="banners/banner-clinica.jpg" alt="Imagen Clínica">
+    </div>
+</div>
