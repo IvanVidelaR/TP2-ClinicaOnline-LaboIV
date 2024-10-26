@@ -9,14 +9,31 @@
             <div class="auth__form-input form-floating position-relative">
                 <input type="text" class="form-control" id="floatingName" 
                 placeholder="name"
-                    [formControl]="form.controls.name"
-                    [ngClass]="{ 'is-invalid': form.controls.name.invalid && form.controls.name.touched }">
+                    [formControl]="form.controls.nombre"
+                    [ngClass]="{ 'is-invalid': form.controls.nombre.invalid && form.controls.nombre.touched }">
                 <label for="floatingName">Nombre</label>
                 <!-- <i class="fas fa-envelope"></i> -->
                 <div class="invalid-feedback">
-                    @if (form.controls.name.invalid && form.controls.name.touched) {
+                    @if (form.controls.nombre.invalid && form.controls.nombre.touched) {
                         <p>
                             <span>El nombre es requerido.</span>
+                        </p>
+                    }
+                </div>
+            </div>
+
+            <!-- Input Nombre -->
+            <div class="auth__form-input form-floating position-relative">
+                <input type="text" class="form-control" id="floatingName" 
+                placeholder="name"
+                    [formControl]="form.controls.apellido"
+                    [ngClass]="{ 'is-invalid': form.controls.apellido.invalid && form.controls.apellido.touched }">
+                <label for="floatingName">Apellido</label>
+                <!-- <i class="fas fa-envelope"></i> -->
+                <div class="invalid-feedback">
+                    @if (form.controls.apellido.invalid && form.controls.apellido.touched) {
+                        <p>
+                            <span>El apellido es requerido.</span>
                         </p>
                     }
                 </div>

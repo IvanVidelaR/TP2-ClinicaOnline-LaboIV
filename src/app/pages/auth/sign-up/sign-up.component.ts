@@ -5,6 +5,7 @@ import { AuthenticationService } from '../../../services/authentication.service'
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { UserCredential } from '@angular/fire/auth';
+import { Persona } from '../../../models/persona.model';
 
 @Component({
   selector: 'app-sign-up',
@@ -23,7 +24,8 @@ export class SignUpComponent {
   }
   
   protected form = new FormGroup({
-    name: new FormControl('', [Validators.required]),
+    nombre: new FormControl('', [Validators.required]),
+    apellido: new FormControl('', [Validators.required]),
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required, Validators.minLength(6)])
   });
@@ -33,14 +35,11 @@ export class SignUpComponent {
     if(this.form.valid)
     {
       const promise = new Promise<UserCredential>((resolve, reject) => {
-        this.authenticationService.signUp(this.form.value.email!, this.form.value.password!)
+        this.authenticationService.signUp(this.form.value as Persona)
         .then((userCredentials) => {
-          this.authenticationService.updateUser(this.form.value.name!)
-            .then(() => {
-              resolve(userCredentials); 
-              return userCredentials;   
-            })
-            .catch((error) => reject(error)); 
+          resolve(userCredentials);
+          return userCredentials;   
+
         })
         .catch((error) => reject(error)); 
         

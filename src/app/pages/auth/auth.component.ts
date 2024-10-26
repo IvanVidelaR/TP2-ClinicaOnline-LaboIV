@@ -4,6 +4,7 @@ import { toast } from 'ngx-sonner';
 import { AuthenticationService } from '../../services/authentication.service';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { Persona } from '../../models/persona.model';
 
 @Component({
   selector: 'app-auth',
@@ -30,7 +31,7 @@ export class AuthComponent {
     // Acá tendría que hacer una promesa con new Promise y hacer el sign in y despues lanzar la otra promesa de setear el documento. Con set get document.
     if(this.form.valid)
     {
-      toast.promise(this.authenticationService.signIn(this.form.value.email!, this.form.value.password!), {
+      toast.promise(this.authenticationService.signIn(this.form.value as Persona), {
         loading: 'Iniciando sesión...',
         success: (userCredentials) => {
           return 'Bienvenido ' + userCredentials.user.displayName;

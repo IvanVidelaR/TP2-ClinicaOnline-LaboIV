@@ -1,5 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateCurrentUser, updateProfile, UserCredential } from '@angular/fire/auth';
+import { Persona } from '../models/persona.model';
 
 @Injectable({
   providedIn: 'root'
@@ -15,18 +16,19 @@ export class AuthenticationService {
     return this.auth;
   }
 
-  public signIn(email: string, password: string) : Promise<UserCredential>
+  public signIn(persona: Persona) : Promise<UserCredential>
   {
-    return signInWithEmailAndPassword(this.auth, email, password);
+    return signInWithEmailAndPassword(this.auth, persona.email, persona.password);
   }
 
-  public signUp(email: string, password: string) : Promise<UserCredential>
+  public async signUp(persona: Persona) : Promise<UserCredential>
   {
-    return createUserWithEmailAndPassword(this.auth, email, password);
-  }
+    const userCredential = await createUserWithEmailAndPassword(this.auth, persona.email, persona.password);
 
-  public updateUser(displayName: string) : Promise<void>
-  {
-    return updateProfile(this.auth.currentUser!, {displayName})
+    if (this.auth.currentUser) {
+      await updateProfile(this.auth.currentUser, { displayName: persona.nombre });
+    }
+    
+    return userCredential;  
   }
 }
