@@ -62,7 +62,7 @@ export class SignUpComponent {
 
     if(this.form.value.otraEspecialidad)
       this.especialidades.push(this.form.value.otraEspecialidad);
-    
+      this.form.controls.otraEspecialidad.setValue('');
   }
 
   protected togglePasswordVisibility() {
