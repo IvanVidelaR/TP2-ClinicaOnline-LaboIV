@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { FormGroup, Validators, ReactiveFormsModule, FormControl } from '@angular/forms';
+import { FormGroup, Validators, ReactiveFormsModule, FormControl, FormArray } from '@angular/forms';
 import { toast } from 'ngx-sonner';
 import { AuthenticationService } from '../../../services/authentication.service';
 import { CommonModule } from '@angular/common';
@@ -42,15 +42,27 @@ export class SignUpComponent {
     });
   }
 
-  onSpecialtyChange(event: Event) {
-      const value = (event.target as HTMLSelectElement).value;
-      this.isOtherSpecialty = value === 'otra';
+  protected onSpecialtyChange(event: Event) {
+    const selectElement = event.target as HTMLSelectElement;
+    const selectedOptions = Array.from(selectElement.selectedOptions).map(option => option.value);
 
-      // Si se selecciona "Otra", se puede limpiar el control de la especialidad
-      if (this.isOtherSpecialty) {
-          this.form.get('otraEspecialidad')?.setValidators([Validators.required]); 
-          this.form.get('otraEspecialidad')?.updateValueAndValidity(); 
-      }
+    const especialidadArray = this.form.get('especialidad') as FormArray;
+    especialidadArray.clear();
+    selectedOptions.forEach(option => {
+      especialidadArray.push(new FormControl(option));
+    });
+    
+    console.log(especialidadArray);
+  }
+
+  protected addSpecialty()
+  {
+    if(this.form.value.otraEspecialidad == '')
+      return;
+
+    if(this.form.value.otraEspecialidad)
+      this.especialidades.push(this.form.value.otraEspecialidad);
+    
   }
 
   protected togglePasswordVisibility() {
@@ -65,7 +77,7 @@ export class SignUpComponent {
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required, Validators.minLength(6)]),
     imagenDePerfil: new FormControl('', [Validators.required]),
-    especialidad: new FormControl(''), 
+    especialidad: new FormArray([]), 
     otraEspecialidad: new FormControl(''),
     obraSocial: new FormControl(''), 
     segundaImagenDePerfil: new FormControl('')

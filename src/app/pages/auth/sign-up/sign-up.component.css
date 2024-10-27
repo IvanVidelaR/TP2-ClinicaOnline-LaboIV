@@ -51,12 +51,21 @@ h1 {
     margin-bottom: 0;
 }
 
+#floatingEspecialidad {
+    height: 200px;
+}
+
+.auth__form-select {
+    height: 230px;
+}
+
 .auth__form-input {
     height: 80px;
     display: flex;
     flex-direction: column;
     margin-bottom: 9px;
 }
+
 
 .auth__titulo, .auth__logo {
     margin: 0 0 15px 0;
