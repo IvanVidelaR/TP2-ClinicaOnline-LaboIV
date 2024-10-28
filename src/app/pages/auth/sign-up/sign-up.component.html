@@ -128,7 +128,7 @@
             <!-- Input Imagen Perfil -->
             <div class="auth__form-input form-floating position-relative">
                 <input type="file" class="form-control" id="floatingImagenDePerfil" 
-                placeholder="name"
+                placeholder="name" (change)="profileImage = $event"
                     [formControl]="form.controls.imagenDePerfil"
                     [ngClass]="{ 'is-invalid': form.controls.imagenDePerfil.invalid && form.controls.imagenDePerfil.touched }">
                 <label for="floatingImagenDePerfil">Imagen de perfil</label>
@@ -148,7 +148,7 @@
                     <select class="form-control" id="floatingEspecialidad" multiple
                         [ngClass]="{ 'is-invalid': form.controls.especialidad.invalid && form.controls.especialidad.touched }"
                         (change)="onSpecialtyChange($event)">
-                        <option value="" disabled selected>Selecciona una o más especialidades</option>
+                        <option value="" disabled>Seleccione una o más especialidades</option>
                         @for (especialidad of especialidades; track $index) 
                         {
                             <option [value]="especialidad">{{ especialidad }}</option>
@@ -177,7 +177,7 @@
                 <!-- Input Imagen Perfil -->
                 <div class="auth__form-input form-floating position-relative">
                     <input type="file" class="form-control" id="floatingSegundaImagenDePerfil" 
-                    placeholder="name"
+                    placeholder="name" (change)="secondProfileImage = $event"
                         [formControl]="form.controls.segundaImagenDePerfil"
                         [ngClass]="{ 'is-invalid': form.controls.segundaImagenDePerfil.invalid && form.controls.segundaImagenDePerfil.touched }">
                     <label for="floatingSegundaImagenDePerfil">Segunda imagen de perfil</label>
