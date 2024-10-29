@@ -186,10 +186,16 @@ export class SignUpComponent {
     } 
     else if (this.perfil == 'paciente') 
     {
+      console.log('hola');
+      
       const urlImage = await this.loadImage(this.profileImage!, 'pacientes', personaData);
       personaData.imagenDePerfil = urlImage;
 
-      const urlSecondImage = await this.loadImage(this.profileImage!, 'pacientes', personaData);
+      console.log('Primera imagen: ' + urlImage);
+
+      const urlSecondImage = await this.loadImage(this.secondProfileImage!, 'pacientes', personaData, true);
+
+      console.log('Segunda imagen: ' + urlSecondImage);
 
       const pacienteData: Paciente = {
         ...personaData,

@@ -24,7 +24,7 @@ export class StorageService {
       this.storage,
       !imagenSecundaria
         ? `${collection}/${id.toString()}`
-        : `${collection}/${id.toString()}/segundaImagen`
+        : `${collection}/${id.toString()}_segundaImagen`
     );
 
     await uploadBytes(storageRef, image);
