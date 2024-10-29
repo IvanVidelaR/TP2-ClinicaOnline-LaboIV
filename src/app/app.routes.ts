@@ -3,7 +3,7 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
     {
         path: '',
-        redirectTo: 'auth',
+        redirectTo: 'welcome-page',
         pathMatch: 'full'
     },
     {
@@ -20,5 +20,10 @@ export const routes: Routes = [
         path: 'sign-up/eleccion-perfil',
         loadComponent: () => 
             import('./pages/auth/eleccion-perfil/eleccion-perfil.component').then((m) => m.EleccionPerfilComponent)
+    },
+    {
+        path: 'welcome-page',
+        loadComponent: () => 
+            import('./pages/welcome-page/welcome-page.component').then((m) => m.WelcomePageComponent)
     }
 ];
