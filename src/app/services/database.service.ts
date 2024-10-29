@@ -10,10 +10,10 @@ export class DatabaseService {
   
   constructor() { }
 
-  public setDocument(path: string, data: any, documentId?: string) : Promise<void>
+  public setDocument(path: string, data: any, documentId?: number) : Promise<void>
   {
     const document = documentId 
-      ? this.firestore.collection(path).doc(documentId)
+      ? this.firestore.collection(path).doc(documentId.toString())
       : this.firestore.collection(path).doc();
 
     return document.set({ ...data });

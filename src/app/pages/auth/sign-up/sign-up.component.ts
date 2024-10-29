@@ -161,7 +161,7 @@ export class SignUpComponent {
         especialidad: formData.especialidad!,
       };
 
-      await this.databaseService.setDocument('especialistas', especialistaData);
+      await this.databaseService.setDocument('especialistas', especialistaData, personaData.dni!);
     } 
     else if (this.perfil == 'paciente') 
     {
@@ -176,7 +176,7 @@ export class SignUpComponent {
         segundaImagenDePerfil: urlSecondImage,
       };
 
-      await this.databaseService.setDocument('pacientes', pacienteData);
+      await this.databaseService.setDocument('pacientes', pacienteData, personaData.dni!);
     }
   }
 
