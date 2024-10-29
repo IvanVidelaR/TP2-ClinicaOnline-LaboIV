@@ -17,6 +17,7 @@ import { Paciente } from '../../../models/paciente.model';
 import { Especialista } from '../../../models/especialista.model';
 import { DatabaseService } from '../../../services/database.service';
 import { StorageService } from '../../../services/storage.service';
+import { FirebaseError } from '@angular/fire/app';
 
 @Component({
   selector: 'app-sign-up',
@@ -110,7 +111,7 @@ export class SignUpComponent {
 
   protected async onSubmit() {
     if (this.form.valid) {
-      const promise = new Promise<UserCredential>((resolve, reject) => {
+      const promise = new Promise<any>((resolve, reject) => {
         this.authenticationService
           .signUp(
             this.perfil == 'especialista'
@@ -123,7 +124,11 @@ export class SignUpComponent {
             resolve(userCredentials);
             return userCredentials;
           })
-          .catch((error) => reject(error));
+          .catch((error: FirebaseError) => {
+            this.form.reset();
+            reject(error);
+            return error;
+          });
       });
 
       toast.promise(promise, {
@@ -131,7 +136,23 @@ export class SignUpComponent {
         success: (userCredentials: UserCredential) => {
           return 'Bienvenido ' + userCredentials.user.displayName;
         },
-        error: '¡ERROR - Correo y/o contraseña inválidos!',
+        error: (error: any) => {
+          let message = '';
+
+          switch (error.code) {
+            case 'auth/email-already-in-use':
+              message = "Este correo ya está en uso.";
+              break;
+            case 'auth/invalid-email':
+              message = "Correo inválido.";
+              break;
+            default:
+              message = "ERROR - " + error.message;
+              break;
+          }
+
+          return message;
+        }
       });
     } else {
       this.form.markAllAsTouched();
