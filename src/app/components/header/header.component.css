@@ -1,0 +1,15 @@
+.navbar {
+    padding: 20px 40px;
+    box-shadow: 0 20px 24px -4px rgba(16, 24, 40, .1), 0 8px 8px -4px rgba(16, 24, 40, .04);
+}
+
+#navbar-nav {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+#navbar-nav li:last-child a {
+    padding: 10px 20px;
+    border-radius: 25px;
+}
