@@ -5,12 +5,22 @@
             ClínicaOnline - IvanVidelaR
         </a>
         <ul id="navbar-nav" class="navbar-nav mb mb-lg-0 d-flex align-items-center">
-            <li class="nav-item">
-                <a class="nav-link all-nav-link" routerLink="/sign-up/eleccion-perfil" routerLinkActive="active">Sign up</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link last-nav-link" routerLink="/auth" routerLinkActive="active">Log in</a>
-            </li>
+            @if(user)
+            {
+                <li class="nav-item" (click)="signOut()">
+                    <a class="nav-link last-nav-link" routerLink="/sign-up/eleccion-perfil" routerLinkActive="active">Sign out</a>
+                </li>
+            }
+            @else 
+            {
+                <li class="nav-item">
+                    <a class="nav-link all-nav-link" routerLink="/sign-up/eleccion-perfil" routerLinkActive="active">Sign up</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link last-nav-link" routerLink="/auth" routerLinkActive="active">Log in</a>
+                </li>
+            }
+            
         </ul>
     </nav>
 </header>

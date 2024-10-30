@@ -31,4 +31,9 @@ export class AuthenticationService {
     
     return userCredential;  
   }
+
+  public async signOut(): Promise<void>
+  {
+    return this.auth.signOut();
+  }
 }
