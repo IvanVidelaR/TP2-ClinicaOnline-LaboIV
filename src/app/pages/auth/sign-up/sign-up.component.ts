@@ -54,16 +54,21 @@ export class SignUpComponent {
     this.route.params.subscribe((params) => {
       this.perfil = params['perfil'];
 
-      if (this.perfil === 'especialista') {
+      if (this.perfil === 'especialista')
+      {
         this.form.get('especialidad')?.setValidators([Validators.required]);
         this.form.get('especialidad')?.updateValueAndValidity();
-      } else if (this.perfil === 'paciente') {
+      }
+      else if (this.perfil === 'paciente') {
         this.form.get('obraSocial')?.setValidators([Validators.required]);
         this.form.get('obraSocial')?.updateValueAndValidity();
         this.form
           .get('segundaImagenDePerfil')
           ?.setValidators([Validators.required]);
         this.form.get('segundaImagenDePerfil')?.updateValueAndValidity();
+      }
+      else if (this.perfil === 'administrador' && this.authenticationService.getAuth().currentUser?.displayName == 'administrador') {
+        // HACER ALGO.
       }
       else
       {
@@ -106,6 +111,7 @@ export class SignUpComponent {
   }
 
   protected form = new FormGroup({
+    perfil: new FormControl(this.perfil),
     nombre: new FormControl('', [Validators.required]),
     apellido: new FormControl('', [Validators.required]),
     edad: new FormControl(null, [Validators.required]),
@@ -133,9 +139,10 @@ export class SignUpComponent {
           )
           .then(async (userCredentials) => {
             await this.saveFormData();
+            const nombreCompleto : string = this.form.value.nombre + ' ' + this.form.value.apellido;
             this.form.reset();
-            resolve(userCredentials);
-            return userCredentials;
+            resolve(nombreCompleto);
+            return nombreCompleto;
           })
           .catch((error: FirebaseError) => {
             this.form.reset();
@@ -146,8 +153,9 @@ export class SignUpComponent {
 
       toast.promise(promise, {
         loading: 'Creando cuenta...',
-        success: (userCredentials: UserCredential) => {
-          return 'Bienvenido ' + userCredentials.user.displayName;
+        success: (nombreCompleto: string) => {
+          this.router.navigateByUrl('/welcome-page');
+          return 'Bienvenido ' + nombreCompleto;
         },
         error: (error: any) => {
           let message = '';
@@ -176,6 +184,7 @@ export class SignUpComponent {
     const formData = { ...this.form.value };
 
     const personaData: Persona = {
+      perfil: this.perfil,
       nombre: formData.nombre!,
       apellido: formData.apellido!,
       edad: formData.edad!,
@@ -198,9 +207,7 @@ export class SignUpComponent {
       await this.databaseService.setDocument('especialistas', especialistaData, personaData.dni!);
     } 
     else if (this.perfil == 'paciente') 
-    {
-      console.log('hola');
-      
+    {      
       const urlImage = await this.loadImage(this.profileImage!, 'pacientes', personaData);
       personaData.imagenDePerfil = urlImage;
 

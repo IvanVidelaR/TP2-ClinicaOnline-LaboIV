@@ -7,8 +7,8 @@
         <ul id="navbar-nav" class="navbar-nav mb mb-lg-0 d-flex align-items-center">
             @if(user)
             {
-                <li class="nav-item" (click)="signOut()">
-                    <a class="nav-link last-nav-link" routerLink="/sign-up/eleccion-perfil" routerLinkActive="active">Sign out</a>
+                <li class="nav-item" (click)="signOut()" style="cursor: pointer;">
+                    <a class="nav-link last-nav-link">Sign out</a>
                 </li>
             }
             @else 

@@ -4,15 +4,17 @@
 }
 
 .eleccion-perfil__form {
+    /* max-width: 400px; */
     margin: auto;
     display: flex;
     flex-direction: column;
     padding: 10px;
+
 }
 
 .eleccion-perfil__logo {
     width: 75px;
-    margin: 0 auto 15px auto;
+    margin-bottom: 15px;
     align-self: center;
 }
 
@@ -25,6 +27,19 @@
     align-items: center;
     justify-content: flex-start; 
     height: 100%;
+}
+
+/* .auth__form-container {
+    margin-right: auto;
+    width: 50%;
+    overflow-y: auto;
+    padding-top: 20px;
+} */
+
+.eleccion-perfil__titulo, .eleccion-perfil__subtitulo, .descripcion-perfil, .img-perfil {
+    max-width: 100%; 
+    word-wrap: break-word; 
+    white-space: normal; 
 }
 
 .eleccion-perfil__img-container {

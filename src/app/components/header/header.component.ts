@@ -13,13 +13,13 @@ import { toast } from 'ngx-sonner';
 })
 export class HeaderComponent implements OnInit{
   
-  protected authenticationService = inject(AuthenticationService);
+  private authenticationService = inject(AuthenticationService);
   protected user? : User | null;
 
   ngOnInit(): void {
-    this.authenticationService.getAuth().onAuthStateChanged((auth: User | null) => {
-      this.user = auth;
-    })
+    this.authenticationService.getCurrentUser().subscribe((user: User | null) => {
+      this.user = user;
+    });
   }
 
   protected signOut()
