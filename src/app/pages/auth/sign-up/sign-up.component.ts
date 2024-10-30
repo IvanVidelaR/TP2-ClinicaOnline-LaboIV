@@ -89,12 +89,20 @@ export class SignUpComponent {
     if (this.form.value.otraEspecialidad == '') return;
 
     if (this.form.value.otraEspecialidad)
-      this.especialidades.push(this.form.value.otraEspecialidad);
+    {
+      const specialty = this.capitalizeFirstLetter(this.form.value.otraEspecialidad.trim());
+      this.especialidades.push(specialty);
+    }
+    
     this.form.controls.otraEspecialidad.setValue('');
   }
 
   protected togglePasswordVisibility() {
     this.showPassword = !this.showPassword;
+  }
+
+  protected capitalizeFirstLetter(val: string) {
+    return String(val).charAt(0).toUpperCase() + String(val).slice(1);
   }
 
   protected form = new FormGroup({
