@@ -1,0 +1,16 @@
+.secondary-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-content {
+    padding: 20px 40px;
+    margin: 0 auto;
+    max-width: 715px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-direction: column;
+    flex: 1;
+}

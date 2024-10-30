@@ -9,7 +9,7 @@ import {
 import { toast } from 'ngx-sonner';
 import { AuthenticationService } from '../../../services/authentication.service';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { UserCredential } from '@angular/fire/auth';
 import { Persona } from '../../../models/persona.model';
 import { ActivatedRoute } from '@angular/router';
@@ -30,7 +30,8 @@ export class SignUpComponent {
   private authenticationService = inject(AuthenticationService);
   private databaseService = inject(DatabaseService);
   private storageService = inject(StorageService);
-  
+  private router = inject(Router);
+
   protected profileImage? : Event;
   protected secondProfileImage? : Event;
   protected showPassword = false;
@@ -63,6 +64,10 @@ export class SignUpComponent {
           .get('segundaImagenDePerfil')
           ?.setValidators([Validators.required]);
         this.form.get('segundaImagenDePerfil')?.updateValueAndValidity();
+      }
+      else
+      {
+        this.router.navigateByUrl('/error');
       }
     });
   }
