@@ -41,6 +41,16 @@ export class AuthenticationService {
     await this.signOut();
   }
 
+  async createUserWithoutSignIn(persona: Persona): Promise<void> {
+    const currentUser = this.auth.currentUser;
+
+    await createUserWithEmailAndPassword(this.auth, persona.email, persona.password);
+
+    if (currentUser) {
+      await this.auth.updateCurrentUser(currentUser);
+    }
+  }
+
   public sendEmailVerification(user: User): Promise<void> {
     return sendEmailVerification(user);
   }

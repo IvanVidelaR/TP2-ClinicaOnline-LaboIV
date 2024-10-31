@@ -55,6 +55,13 @@ export class SignUpComponent {
     this.route.params.subscribe((params) => {
       this.perfil = params['perfil'];
 
+      if (
+        this.authenticationService.getAuth().currentUser?.displayName ==
+        'administrador'
+      ) {
+        this.generarNuevoUsuarioDesdeUsuarios = true;
+      }
+
       if (this.perfil === 'especialista') {
         this.form.get('especialidad')?.setValidators([Validators.required]);
         this.form.get('especialidad')?.updateValueAndValidity();
@@ -65,12 +72,8 @@ export class SignUpComponent {
           .get('segundaImagenDePerfil')
           ?.setValidators([Validators.required]);
         this.form.get('segundaImagenDePerfil')?.updateValueAndValidity();
-      } else if (
-        this.perfil === 'administrador' &&
-        this.authenticationService.getAuth().currentUser?.displayName ==
-          'administrador'
-      ) {
-        this.generarNuevoUsuarioDesdeUsuarios = true;
+      } else if (this.perfil === 'administrador') {
+        // POR DEFECTO
       } else {
         this.router.navigateByUrl('/error');
       }
@@ -117,7 +120,7 @@ export class SignUpComponent {
 
   protected form = new FormGroup({
     perfil: new FormControl(''),
-    habilitado: new FormControl(true),
+    habilitado: new FormControl(false),
     nombre: new FormControl('', [Validators.required]),
     apellido: new FormControl('', [Validators.required]),
     edad: new FormControl(null, [Validators.required]),
@@ -136,41 +139,41 @@ export class SignUpComponent {
 
   protected async onSubmit() {
     if (this.form.valid) {
-      const promise = new Promise<any>((resolve, reject) => {
-        this.authenticationService
-          .signUp(
-            this.perfil == 'especialista'
-              ? (this.form.value as Especialista)
-              : (this.form.value as Paciente)
-          )
-          .then(async () => {
-            await this.saveFormData();
-            this.form.reset();
-            resolve('');
-            return '';
-          })
-          .catch((error: FirebaseError) => {
-            this.form.reset();
-            reject(error);
-            return error;
-          });
+      const promise = new Promise<any>(async (resolve, reject) => {
+        try
+        {
+          if (this.generarNuevoUsuarioDesdeUsuarios) {
+            await this.authenticationService.createUserWithoutSignIn(this.form.value as Persona)
+          } else {
+            await this.authenticationService.signUp(this.form.value as Persona);
+          }
+
+          await this.saveFormData();
+          this.form.reset();
+          resolve('');
+          return '';
+        }
+        catch(error)
+        {
+          this.form.reset();
+          reject(error);
+          return '';
+        }
       });
 
       toast.promise(promise, {
         loading: 'Creando cuenta...',
         success: () => {
-          if (this.generarNuevoUsuarioDesdeUsuarios)
-          {
-            this.router.navigateByUrl('');
+          if (this.generarNuevoUsuarioDesdeUsuarios) {
+            this.router.navigateByUrl('usuarios');
             return '¡Usuario generado correctamente!';
+          } else {
+            this.router.navigateByUrl('/auth');
+            return '¡REGISTRO EXITOSO! - Recuerde verificar su email antes de ingresar.';
           }
-          
-          this.router.navigateByUrl('/auth');
-          return '¡REGISTRO EXITOSO! - Recuerde verificar su email antes de ingresar.'
         },
         error: (error: any) => {
           let message = '';
-
           switch (error.code) {
             case 'auth/email-already-in-use':
               message = 'Este correo ya está en uso.';
@@ -179,10 +182,9 @@ export class SignUpComponent {
               message = 'Correo inválido.';
               break;
             default:
-              message = 'ERROR - ' + error.message;
+              message = '¡ERROR! - ' + error.message;
               break;
           }
-
           return message;
         },
       });
@@ -264,8 +266,6 @@ export class SignUpComponent {
         personaData.email!
       );
     }
-
-    await this.router.navigateByUrl('/welcome-page');
   }
 
   protected async loadImage(
