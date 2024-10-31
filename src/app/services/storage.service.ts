@@ -17,14 +17,14 @@ export class StorageService {
   async uploadImage(
     image: Blob,
     collection: string,
-    id: number,
+    id: string,
     imagenSecundaria: boolean = false
   ): Promise<string> {
     const storageRef = ref(
       this.storage,
       !imagenSecundaria
-        ? `${collection}/${id.toString()}`
-        : `${collection}/${id.toString()}_segundaImagen`
+        ? `${collection}/${id}`
+        : `${collection}/${id}_segundaImagen`
     );
 
     await uploadBytes(storageRef, image);
