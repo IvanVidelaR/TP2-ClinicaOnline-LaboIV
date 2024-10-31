@@ -1,0 +1,104 @@
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-10">
+      <div class="card shadow-lg">
+        <div class="card-header bg-dark text-white">
+          <h2 class="mb-0 text-center">Tabla de usuarios:</h2>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-striped table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">Perfil</th>
+                  <th scope="col">Nombre</th>
+                  <th scope="col">Apellido</th>
+                  <th scope="col">Edad</th>
+                  <th scope="col">DNI</th>
+                  <th scope="col">Mail</th>
+                  <th scope="col">Imagen de perfil</th>
+                  <th scope="col">Especialidades</th>
+                  <th scope="col">Obra Social</th>
+                  <th scope="col">Segunda imagen de perfil</th>
+                  <th scope="col">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                @if(loading) {
+                <tr>
+                  <td colspan="11" class="text-center">Cargando usuarios...</td>
+                </tr>
+                } @else { @for (usuario of usuarios; track $index) {
+                <tr>
+                  <td>{{ usuario.perfil }}</td>
+                  <td>{{ usuario.nombre }}</td>
+                  <td>{{ usuario.apellido }}</td>
+                  <td>{{ usuario.edad }}</td>
+                  <td>{{ usuario.dni }}</td>
+                  <td>{{ usuario.email }}</td>
+                  <td>
+                    <img
+                      src="{{ usuario.imagenDePerfil }}"
+                      alt="Imagen de perfil"
+                      style="max-width: 50px; max-height: 50px"
+                      class="img-fluid"
+                    />
+                  </td>
+                  @if(usuario.perfil == 'especialista') {
+                  <td>{{ usuario.especialidad }}</td>
+                  } @else {
+                  <td>{{ usuario.perfil }} no tiene especialidad</td>
+                  } @if(usuario.perfil == 'paciente') {
+                  <td>{{ usuario.obraSocial }}</td>
+                  <td>
+                    <img
+                      src="{{ usuario.segundaImagenDePerfil }}"
+                      alt="Segunda imagen de perfil"
+                      style="max-width: 50px; max-height: 50px"
+                      class="img-fluid"
+                    />
+                  </td>
+                  } @else {
+                  <td>{{ usuario.perfil }} no tiene obra social</td>
+                  <td>
+                    {{ usuario.perfil }} no tiene segunda imagen de perfil
+                  </td>
+                  } @if(usuario.perfil == 'especialista') {
+                    @if(!habilitadoCargando)
+                    {
+                      <td>
+                        <button
+                          type="button"
+                          [ngClass]="
+                            usuario.habilitado
+                              ? 'btn btn-danger'
+                              : 'btn btn-success'
+                          "
+                          (click)="cambiarHabilitadoEspecialista(usuario)"
+                        >
+                          {{ usuario.habilitado ? "Deshabilitar" : " Habilitar" }}
+                        </button>
+                      </td>
+                    }
+                    @else {
+                      <td>
+                        <div style="margin-left: 23px;" class="lds-ring"><div></div><div></div><div></div><div></div></div>                          
+                      </td>
+                    }
+                    
+                  }
+                </tr>
+                } @empty {
+                <tr>
+                  <td colspan="11" class="text-center">¡No hay usuarios!</td>
+                </tr>
+                } }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <button routerLink="/sign-up/eleccion-perfil" type="button" class="btn btn-dark mt-2" style="width: 100%;">Generar nuevo usuario</button>
+    </div>
+  </div>
+</div>
