@@ -60,6 +60,11 @@
             <!-- Botón de Iniciar Sesión -->
             <p class="auth__create-account">¿No tienes una cuenta? <span routerLink="/sign-up/eleccion-perfil">Crear una cuenta nueva</span></p>
             <button class="w-100 btn btn-lg btn-dark mt-3" type="submit">Iniciar Sesión</button>
+            <div class="text-center mt-4">
+                <button (click)="completarCredenciales('Administrador')" type="button" class="btn btn-warning m-1">Administrador</button>
+                <button (click)="completarCredenciales('Paciente')" type="button" class="btn btn-warning m-1">Paciente</button>
+                <button (click)="completarCredenciales('Especialista')" type="button" class="btn btn-warning m-1">Especialista</button>
+            </div>
             <p class="mt-4 mb-3 text-muted text-center">&copy; IvanVidelaR 2024</p>
         </form>
     </div>

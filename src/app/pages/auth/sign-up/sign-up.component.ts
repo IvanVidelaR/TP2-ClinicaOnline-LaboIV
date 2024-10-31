@@ -75,6 +75,12 @@ export class SignUpComponent {
         this.router.navigateByUrl('/error');
       }
     });
+
+    this.form.patchValue(
+      {
+        perfil: this.perfil
+      }
+    )
   }
 
   protected onSpecialtyChange(event: Event) {
@@ -111,7 +117,8 @@ export class SignUpComponent {
   }
 
   protected form = new FormGroup({
-    perfil: new FormControl(this.perfil),
+    perfil: new FormControl(''),
+    habilitado: new FormControl(true),
     nombre: new FormControl('', [Validators.required]),
     apellido: new FormControl('', [Validators.required]),
     edad: new FormControl(null, [Validators.required]),
@@ -154,7 +161,6 @@ export class SignUpComponent {
       toast.promise(promise, {
         loading: 'Creando cuenta...',
         success: (nombreCompleto: string) => {
-          this.router.navigateByUrl('/welcome-page');
           return 'Bienvenido ' + nombreCompleto;
         },
         error: (error: any) => {
@@ -202,20 +208,17 @@ export class SignUpComponent {
       const especialistaData: Especialista = {
         ...personaData,
         especialidad: formData.especialidad!,
+        habilitado: formData.habilitado!
       };
 
-      await this.databaseService.setDocument('especialistas', especialistaData, personaData.dni!);
+      await this.databaseService.setDocument('usuarios', especialistaData, personaData.email!);
     } 
     else if (this.perfil == 'paciente') 
     {      
       const urlImage = await this.loadImage(this.profileImage!, 'pacientes', personaData);
       personaData.imagenDePerfil = urlImage;
 
-      console.log('Primera imagen: ' + urlImage);
-
       const urlSecondImage = await this.loadImage(this.secondProfileImage!, 'pacientes', personaData, true);
-
-      console.log('Segunda imagen: ' + urlSecondImage);
 
       const pacienteData: Paciente = {
         ...personaData,
@@ -223,8 +226,17 @@ export class SignUpComponent {
         segundaImagenDePerfil: urlSecondImage,
       };
 
-      await this.databaseService.setDocument('pacientes', pacienteData, personaData.dni!);
+      await this.databaseService.setDocument('usuarios', pacienteData, personaData.email!);
     }
+    else if (this.perfil == 'administrador')
+    {
+      const urlImage = await this.loadImage(this.profileImage!, 'administradores', personaData);
+      personaData.imagenDePerfil = urlImage;
+
+      await this.databaseService.setDocument('usuarios', personaData, personaData.email!);
+    }
+
+    await this.router.navigateByUrl('/welcome-page');
   }
 
   protected async loadImage($event : Event, collection: string, data: Persona, secondProfileImage: boolean = false): Promise<string>
@@ -239,7 +251,7 @@ export class SignUpComponent {
       });
 
       // Devuelve el la url de la imagen.
-      return await this.storageService.uploadImage(blob, collection, data.dni!, secondProfileImage); 
+      return await this.storageService.uploadImage(blob, collection, data.email!, secondProfileImage); 
     }
 
     return '';
