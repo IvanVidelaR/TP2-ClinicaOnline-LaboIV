@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './guards/auth.guard';
+import { noAuthAdminGuard } from './guards/no-auth-admin.guard';
 
 export const routes: Routes = [
     {
@@ -37,6 +38,12 @@ export const routes: Routes = [
                 path: 'welcome-page',
                 loadComponent: () => 
                     import('./pages/welcome-page/welcome-page.component').then((m) => m.WelcomePageComponent),
+            },
+            {
+                path: 'usuarios',
+                loadComponent: () => 
+                    import('./pages/usuarios/usuarios.component').then((m) => m.UsuariosComponent),
+                canActivate: [noAuthAdminGuard]
             },
             {
                 path: 'error',
