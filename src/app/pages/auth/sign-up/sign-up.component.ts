@@ -10,7 +10,7 @@ import { toast } from 'ngx-sonner';
 import { AuthenticationService } from '../../../services/authentication.service';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
-import { UserCredential } from '@angular/fire/auth';
+import { User, UserCredential } from '@angular/fire/auth';
 import { Persona } from '../../../models/persona.model';
 import { ActivatedRoute } from '@angular/router';
 import { Paciente } from '../../../models/paciente.model';
@@ -32,11 +32,12 @@ export class SignUpComponent {
   private storageService = inject(StorageService);
   private router = inject(Router);
 
-  protected profileImage? : Event;
-  protected secondProfileImage? : Event;
+  protected profileImage?: Event;
+  protected secondProfileImage?: Event;
   protected showPassword = false;
   protected perfil: string = '';
   protected isOtherSpecialty: boolean = false;
+  protected generarNuevoUsuarioDesdeUsuarios: boolean = false;
 
   protected especialidades: string[] = [
     'Cardiología',
@@ -54,33 +55,30 @@ export class SignUpComponent {
     this.route.params.subscribe((params) => {
       this.perfil = params['perfil'];
 
-      if (this.perfil === 'especialista')
-      {
+      if (this.perfil === 'especialista') {
         this.form.get('especialidad')?.setValidators([Validators.required]);
         this.form.get('especialidad')?.updateValueAndValidity();
-      }
-      else if (this.perfil === 'paciente') {
+      } else if (this.perfil === 'paciente') {
         this.form.get('obraSocial')?.setValidators([Validators.required]);
         this.form.get('obraSocial')?.updateValueAndValidity();
         this.form
           .get('segundaImagenDePerfil')
           ?.setValidators([Validators.required]);
         this.form.get('segundaImagenDePerfil')?.updateValueAndValidity();
-      }
-      else if (this.perfil === 'administrador' && this.authenticationService.getAuth().currentUser?.displayName == 'administrador') {
-        // HACER ALGO.
-      }
-      else
-      {
+      } else if (
+        this.perfil === 'administrador' &&
+        this.authenticationService.getAuth().currentUser?.displayName ==
+          'administrador'
+      ) {
+        this.generarNuevoUsuarioDesdeUsuarios = true;
+      } else {
         this.router.navigateByUrl('/error');
       }
     });
 
-    this.form.patchValue(
-      {
-        perfil: this.perfil
-      }
-    )
+    this.form.patchValue({
+      perfil: this.perfil,
+    });
   }
 
   protected onSpecialtyChange(event: Event) {
@@ -99,12 +97,13 @@ export class SignUpComponent {
   protected addSpecialty() {
     if (this.form.value.otraEspecialidad == '') return;
 
-    if (this.form.value.otraEspecialidad)
-    {
-      const specialty = this.capitalizeFirstLetter(this.form.value.otraEspecialidad.trim());
+    if (this.form.value.otraEspecialidad) {
+      const specialty = this.capitalizeFirstLetter(
+        this.form.value.otraEspecialidad.trim()
+      );
       this.especialidades.push(specialty);
     }
-    
+
     this.form.controls.otraEspecialidad.setValue('');
   }
 
@@ -144,12 +143,11 @@ export class SignUpComponent {
               ? (this.form.value as Especialista)
               : (this.form.value as Paciente)
           )
-          .then(async (userCredentials) => {
+          .then(async () => {
             await this.saveFormData();
-            const nombreCompleto : string = this.form.value.nombre + ' ' + this.form.value.apellido;
             this.form.reset();
-            resolve(nombreCompleto);
-            return nombreCompleto;
+            resolve('');
+            return '';
           })
           .catch((error: FirebaseError) => {
             this.form.reset();
@@ -160,33 +158,40 @@ export class SignUpComponent {
 
       toast.promise(promise, {
         loading: 'Creando cuenta...',
-        success: (nombreCompleto: string) => {
-          return 'Bienvenido ' + nombreCompleto;
+        success: () => {
+          if (this.generarNuevoUsuarioDesdeUsuarios)
+          {
+            this.router.navigateByUrl('');
+            return '¡Usuario generado correctamente!';
+          }
+          
+          this.router.navigateByUrl('/auth');
+          return '¡REGISTRO EXITOSO! - Recuerde verificar su email antes de ingresar.'
         },
         error: (error: any) => {
           let message = '';
 
           switch (error.code) {
             case 'auth/email-already-in-use':
-              message = "Este correo ya está en uso.";
+              message = 'Este correo ya está en uso.';
               break;
             case 'auth/invalid-email':
-              message = "Correo inválido.";
+              message = 'Correo inválido.';
               break;
             default:
-              message = "ERROR - " + error.message;
+              message = 'ERROR - ' + error.message;
               break;
           }
 
           return message;
-        }
+        },
       });
     } else {
       this.form.markAllAsTouched();
     }
   }
 
-  protected async saveFormData() : Promise<void>{
+  protected async saveFormData(): Promise<void> {
     const formData = { ...this.form.value };
 
     const personaData: Persona = {
@@ -200,25 +205,39 @@ export class SignUpComponent {
       imagenDePerfil: '',
     };
 
-    if (this.perfil == 'especialista') 
-    {
-      const urlImage = await this.loadImage(this.profileImage!, 'especialistas', personaData);
+    if (this.perfil == 'especialista') {
+      const urlImage = await this.loadImage(
+        this.profileImage!,
+        'especialistas',
+        personaData
+      );
       personaData.imagenDePerfil = urlImage;
 
       const especialistaData: Especialista = {
         ...personaData,
         especialidad: formData.especialidad!,
-        habilitado: formData.habilitado!
+        habilitado: formData.habilitado!,
       };
 
-      await this.databaseService.setDocument('usuarios', especialistaData, personaData.email!);
-    } 
-    else if (this.perfil == 'paciente') 
-    {      
-      const urlImage = await this.loadImage(this.profileImage!, 'pacientes', personaData);
+      await this.databaseService.setDocument(
+        'usuarios',
+        especialistaData,
+        personaData.email!
+      );
+    } else if (this.perfil == 'paciente') {
+      const urlImage = await this.loadImage(
+        this.profileImage!,
+        'pacientes',
+        personaData
+      );
       personaData.imagenDePerfil = urlImage;
 
-      const urlSecondImage = await this.loadImage(this.secondProfileImage!, 'pacientes', personaData, true);
+      const urlSecondImage = await this.loadImage(
+        this.secondProfileImage!,
+        'pacientes',
+        personaData,
+        true
+      );
 
       const pacienteData: Paciente = {
         ...personaData,
@@ -226,32 +245,51 @@ export class SignUpComponent {
         segundaImagenDePerfil: urlSecondImage,
       };
 
-      await this.databaseService.setDocument('usuarios', pacienteData, personaData.email!);
-    }
-    else if (this.perfil == 'administrador')
-    {
-      const urlImage = await this.loadImage(this.profileImage!, 'administradores', personaData);
+      await this.databaseService.setDocument(
+        'usuarios',
+        pacienteData,
+        personaData.email!
+      );
+    } else if (this.perfil == 'administrador') {
+      const urlImage = await this.loadImage(
+        this.profileImage!,
+        'administradores',
+        personaData
+      );
       personaData.imagenDePerfil = urlImage;
 
-      await this.databaseService.setDocument('usuarios', personaData, personaData.email!);
+      await this.databaseService.setDocument(
+        'usuarios',
+        personaData,
+        personaData.email!
+      );
     }
 
     await this.router.navigateByUrl('/welcome-page');
   }
 
-  protected async loadImage($event : Event, collection: string, data: Persona, secondProfileImage: boolean = false): Promise<string>
-  {
+  protected async loadImage(
+    $event: Event,
+    collection: string,
+    data: Persona,
+    secondProfileImage: boolean = false
+  ): Promise<string> {
     const inputElement = $event!.target as HTMLInputElement;
 
     if (inputElement.files && inputElement.files[0]) {
       const file = inputElement.files[0];
-      
+
       const blob = new Blob([file], {
-        type: file.type
+        type: file.type,
       });
 
       // Devuelve el la url de la imagen.
-      return await this.storageService.uploadImage(blob, collection, data.email!, secondProfileImage); 
+      return await this.storageService.uploadImage(
+        blob,
+        collection,
+        data.email!,
+        secondProfileImage
+      );
     }
 
     return '';

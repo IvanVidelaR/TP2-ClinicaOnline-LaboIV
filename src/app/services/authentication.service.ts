@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateCurrentUser, updateProfile, User, UserCredential } from '@angular/fire/auth';
+import { Auth, createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword, updateCurrentUser, updateProfile, User, UserCredential } from '@angular/fire/auth';
 import { Persona } from '../models/persona.model';
 import { Observable } from 'rxjs';
 
@@ -30,17 +30,21 @@ export class AuthenticationService {
     return signInWithEmailAndPassword(this.auth, persona.email, persona.password);
   }
 
-  public async signUp(persona: Persona) : Promise<UserCredential>
+  public async signUp(persona: Persona) : Promise<void>
   {
-    const userCredential = await createUserWithEmailAndPassword(this.auth, persona.email, persona.password);
+    const userCredentials = await createUserWithEmailAndPassword(this.auth, persona.email, persona.password);
 
-    if (this.auth.currentUser) {
-      await updateProfile(this.auth.currentUser, { displayName: persona.perfil });
-    }
+    await updateProfile(userCredentials.user, { displayName: persona.perfil });
     
-    return userCredential;  
+    await sendEmailVerification(userCredentials.user);
+    
+    await this.signOut();
   }
 
+  public sendEmailVerification(user: User): Promise<void> {
+    return sendEmailVerification(user);
+  }
+  
   public async signOut(): Promise<void>
   {
     return this.auth.signOut();
