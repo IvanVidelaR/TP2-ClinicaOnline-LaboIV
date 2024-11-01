@@ -55,12 +55,20 @@ export class SignUpComponent {
     this.route.params.subscribe((params) => {
       this.perfil = params['perfil'];
 
-      if (
-        this.authenticationService.getAuth().currentUser?.displayName ==
-        'administrador'
-      ) {
-        this.generarNuevoUsuarioDesdeUsuarios = true;
-      }
+      this.authenticationService.getCurrentUser().subscribe((user) => {
+        if (user?.displayName === 'administrador') {
+          this.generarNuevoUsuarioDesdeUsuarios = true;
+        } else {
+          this.generarNuevoUsuarioDesdeUsuarios = false;
+        }
+      });
+
+      // if (
+      //   this.authenticationService.getAuth().currentUser?.displayName ==
+      //   'administrador'
+      // ) {
+      //   this.generarNuevoUsuarioDesdeUsuarios = true;
+      // }
 
       if (this.perfil === 'especialista') {
         this.form.get('especialidad')?.setValidators([Validators.required]);
