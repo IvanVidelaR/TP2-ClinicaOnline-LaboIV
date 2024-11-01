@@ -12,8 +12,17 @@ export const authGuard: CanActivateFn = (route, state) => {
 
   const router = inject(Router);
 
+  if (authenticationService.skipGuardCheck) {
+    return true;
+  }
+
   return new Promise((resolve) => {
-    authenticationService.getAuth().onAuthStateChanged(async (auth : User | null) => {
+    authenticationService.getAuth().onAuthStateChanged(async (auth: User | null) => {
+      if (authenticationService.skipGuardCheck) {
+        resolve(true);
+        return;
+      }
+
       if (auth && auth.emailVerified)
       {
         const usuarioDoc: Usuario = await firstValueFrom(
@@ -29,7 +38,8 @@ export const authGuard: CanActivateFn = (route, state) => {
         }
         else
         {
-          router.navigateByUrl('/welcome-page', {replaceUrl: true});
+          router.navigateByUrl('/welcome-page', { replaceUrl: true });
+          resolve(false);
         }
       } 
       else

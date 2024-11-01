@@ -6,17 +6,24 @@ export const noAuthAdminGuard: CanActivateFn = (route, state) => {
   const authenticationService = inject(AuthenticationService);
   const router = inject(Router);
 
+
+  if (authenticationService.skipGuardCheck) {
+    return true;
+  }
+
   return new Promise((resolve) => {
-    // authenticationService.getAuth().onAuthStateChanged((auth) => {
-    //   if(!auth || auth.displayName !== 'administrador')
-    //   {
-    //     router.navigateByUrl('/auth', {replaceUrl: true});
-    //   }
-    //   else
-    //   {
-    //     resolve(true);
-    //   }
-    // })
-    resolve(true);
-  })
+    authenticationService.getAuth().onAuthStateChanged((auth) => {
+      if (authenticationService.skipGuardCheck) {
+        resolve(true);
+        return;
+      }
+
+      if (!auth || auth.displayName !== 'administrador') {
+        router.navigateByUrl('/auth', { replaceUrl: true });
+        resolve(false);
+      } else {
+        resolve(true);
+      }
+    });
+  });
 };

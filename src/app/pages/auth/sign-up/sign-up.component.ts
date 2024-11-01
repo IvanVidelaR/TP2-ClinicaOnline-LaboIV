@@ -144,12 +144,15 @@ export class SignUpComponent {
         {
           if (this.generarNuevoUsuarioDesdeUsuarios) {
             await this.authenticationService.createUserWithoutSignIn(this.form.value as Persona)
+            await this.saveFormData();
+            this.form.reset();
+            await this.router.navigateByUrl('/usuarios');
           } else {
             await this.authenticationService.signUp(this.form.value as Persona);
+            await this.saveFormData();
+            this.form.reset();
+            await this.router.navigateByUrl('/auth');
           }
-
-          await this.saveFormData();
-          this.form.reset();
           resolve('');
           return '';
         }
@@ -164,11 +167,12 @@ export class SignUpComponent {
       toast.promise(promise, {
         loading: 'Creando cuenta...',
         success: () => {
-          if (this.generarNuevoUsuarioDesdeUsuarios) {
-            this.router.navigateByUrl('usuarios');
+          if (this.generarNuevoUsuarioDesdeUsuarios)
+          {
             return '¡Usuario generado correctamente!';
-          } else {
-            this.router.navigateByUrl('/auth');
+          }
+          else
+          {
             return '¡REGISTRO EXITOSO! - Recuerde verificar su email antes de ingresar.';
           }
         },

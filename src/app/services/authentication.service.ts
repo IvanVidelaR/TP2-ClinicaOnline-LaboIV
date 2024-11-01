@@ -9,6 +9,7 @@ import { Observable } from 'rxjs';
 export class AuthenticationService {
 
   private auth: Auth = inject(Auth);
+  public skipGuardCheck = false;
 
   constructor() { }
 
@@ -44,12 +45,18 @@ export class AuthenticationService {
   async createUserWithoutSignIn(persona: Persona): Promise<void> {
     const currentUser = this.auth.currentUser;
 
-    await createUserWithEmailAndPassword(this.auth, persona.email, persona.password);
+    this.skipGuardCheck = true;
+
+    const userCredentials = await createUserWithEmailAndPassword(this.auth, persona.email, persona.password);
+
+    await updateProfile(userCredentials.user, { displayName: persona.perfil });
+    await sendEmailVerification(userCredentials.user);
 
     if (currentUser) {
-      await this.auth.updateCurrentUser(currentUser);
+      await updateCurrentUser(this.auth, currentUser);
     }
   }
+
 
   public sendEmailVerification(user: User): Promise<void> {
     return sendEmailVerification(user);
