@@ -1,5 +1,5 @@
-<div class="container">
-  <div class="row justify-content-center">
+<div class="container-fluid">
+  <div class="row justify-content-center" >
     <div class="col-md-10">
       <div class="card shadow-lg">
         <div class="card-header bg-dark text-white">
@@ -64,7 +64,7 @@
                     {{ usuario.perfil }} no tiene segunda imagen de perfil
                   </td>
                   } @if(usuario.perfil == 'especialista') {
-                    @if(!habilitadoCargando)
+                    @if(!usuarioLoading[usuario.email])
                     {
                       <td>
                         <button
@@ -74,7 +74,7 @@
                               ? 'btn btn-danger'
                               : 'btn btn-success'
                           "
-                          (click)="cambiarHabilitadoEspecialista(usuario)"
+                          (click)="cambiarHabilitadoEspecialista(usuario, $index)"
                         >
                           {{ usuario.habilitado ? "Deshabilitar" : " Habilitar" }}
                         </button>
@@ -98,7 +98,7 @@
           </div>
         </div>
       </div>
-      <button routerLink="/sign-up/eleccion-perfil" type="button" class="btn btn-dark mt-2" style="width: 100%;">Generar nuevo usuario</button>
+      <button routerLink="/sign-up/eleccion-perfil" type="button" class="btn btn-dark mt-2 w-100">Generar nuevo usuario</button>
     </div>
   </div>
 </div>

@@ -16,7 +16,7 @@ export class UsuariosComponent implements OnInit {
   protected loading = false;
   private databaseService = inject(DatabaseService);
   protected usuarios: Array<Usuario> = [];
-  protected habilitadoCargando: boolean = false;
+  protected usuarioLoading: { [email: string]: boolean} = {};
 
   public ngOnInit(): void {
     this.traerUsuarios();
@@ -41,10 +41,10 @@ export class UsuariosComponent implements OnInit {
     }
   }
 
-  protected async cambiarHabilitadoEspecialista(usuario: Usuario) {
+  protected async cambiarHabilitadoEspecialista(usuario: Usuario, indice: number) {
     try
     {
-      this.habilitadoCargando = true;
+      this.usuarioLoading[usuario.email] = true;
       await this.databaseService.updateDocumentField(
         'usuarios',
         usuario.email!,
@@ -59,7 +59,7 @@ export class UsuariosComponent implements OnInit {
     }
     finally
     {
-      this.habilitadoCargando = false;
+      this.usuarioLoading[usuario.email] = false;
     }
     
   }

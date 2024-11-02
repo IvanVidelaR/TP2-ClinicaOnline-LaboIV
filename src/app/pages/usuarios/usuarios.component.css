@@ -1,18 +1,14 @@
 .main-title {
-    font-size: 3em;
+    font-size: 2em;
     margin: 0;
 }
 
-
-.lds-ring,
-.lds-ring div {
-    box-sizing: border-box;
-}
 .lds-ring {
     display: inline-block;
     position: relative;
     margin: 0 auto;
 }
+
 .lds-ring div {
     box-sizing: border-box;
     display: block;
@@ -41,3 +37,4 @@
     transform: rotate(360deg);
     }
 }
+
