@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, HostListener, inject } from '@angular/core';
 import {
   FormGroup,
   Validators,
@@ -14,6 +14,8 @@ import { FirebaseError } from '@angular/fire/app';
 import { DatabaseService } from '../../services/database.service';
 import { firstValueFrom } from 'rxjs';
 import { Usuario } from '../../models/usuario.model';
+import { PersonaCredenciales } from '../../models/personaCredenciales.model';
+import { useAnimation } from '@angular/animations';
 
 @Component({
   selector: 'app-auth',
@@ -26,10 +28,55 @@ export class AuthComponent {
   private authenticationService = inject(AuthenticationService);
   private databaseService = inject(DatabaseService);
 
-  protected showPassword = false;
-
+  protected showPassword : boolean = false;
+  protected isMenuOpen: boolean = false;
+  
+  protected usuariosPrecargados: Array<PersonaCredenciales> = [
+    {
+      perfil: 'Administrador',
+      email: 'cogitar226@nestvia.com',
+      password: 'cogitar',
+      imagenDePerfil: 'https://firebasestorage.googleapis.com/v0/b/tp2-clinicaonline-ivanvidelar.appspot.com/o/administradores%2Fcogitar226%40nestvia.com?alt=media&token=b616290a-b510-4114-b889-aa5457d494dc'
+    },
+    {
+      perfil: 'Especialista 1',
+      email: 'madexe1773@nestvia.com',
+      password: 'madexe',
+      imagenDePerfil: 'https://firebasestorage.googleapis.com/v0/b/tp2-clinicaonline-ivanvidelar.appspot.com/o/especialistas%2Fmadexe1773%40nestvia.com?alt=media&token=1d89a1f4-9a37-4be8-bcc9-ed8848d994d6'
+    },
+    {
+      perfil: 'Especialista 2',
+      email: 'potagik380@ruhtan.com',
+      password: 'potagik',
+      imagenDePerfil: 'https://firebasestorage.googleapis.com/v0/b/tp2-clinicaonline-ivanvidelar.appspot.com/o/especialistas%2Fpotagik380%40ruhtan.com?alt=media&token=b2059f8f-52c7-4a40-be26-245b7009fdcf'
+    },
+    {
+      perfil: 'Paciente 1',
+      email: 'xemiyo5311@regishub.com',
+      password: 'xemiyo',
+      imagenDePerfil: 'https://firebasestorage.googleapis.com/v0/b/tp2-clinicaonline-ivanvidelar.appspot.com/o/pacientes%2Fxemiyo5311%40regishub.com?alt=media&token=4c704569-aa50-4145-9c20-a73383a6be13'
+    },
+    {
+      perfil: 'Paciente 2',
+      email: 'sofaso5970@ruhtan.com',
+      password: 'sofaso',
+      imagenDePerfil: 'https://firebasestorage.googleapis.com/v0/b/tp2-clinicaonline-ivanvidelar.appspot.com/o/pacientes%2Fsofaso5970%40ruhtan.com?alt=media&token=cebb4dbf-9289-415b-8505-95637c0a21fc'
+    },
+    {
+      perfil: 'Paciente 3',
+      email: 'nabekob942@ruhtan.com',
+      password: 'nakekob',
+      imagenDePerfil: 'https://firebasestorage.googleapis.com/v0/b/tp2-clinicaonline-ivanvidelar.appspot.com/o/pacientes%2Fnabekob942%40ruhtan.com?alt=media&token=d2244b77-84d9-4ef5-858b-fcd3eb18a5df'
+    },
+  ]
+  
   protected togglePasswordVisibility() {
     this.showPassword = !this.showPassword;
+  }
+  
+  protected toggleMenu() {
+    console.log(this.isMenuOpen);
+    this.isMenuOpen = !this.isMenuOpen;
   }
 
   protected form = new FormGroup({
@@ -40,29 +87,22 @@ export class AuthComponent {
     ]),
   });
 
-  completarCredenciales(usuario: string) {
-    switch (usuario) {
-      case 'Administrador':
-        this.form.patchValue({
-          email: 'pitej77720@ruhtan.com',
-          password: 'pitej777',
-        });
-        break;
-      case 'Paciente':
-        this.form.patchValue({
-          email: 'pemoce3772@ruhtan.com',
-          password: 'pemoce',
-        });
-        break;
-      case 'Especialista':
-        this.form.patchValue({
-          email: 'nijamam287@nestvia.com',
-          password: 'nijamam',
-        });
-        break;
-    }
+  protected completarCredenciales(usuario: PersonaCredenciales) {
+    this.form.patchValue({
+      email: usuario.email,
+      password: usuario.password,
+    });
   }
 
+
+  @HostListener('document:click', ['$event'])
+  handleClickOutside(event: MouseEvent) {
+    const clickedInside = (event.target as HTMLElement).closest('.toggle-menu');
+    if (!clickedInside) {
+      this.isMenuOpen = false;
+    }
+  }
+  
   protected async onSubmit() {
     if (this.form.valid) {
       const email = this.form.value.email;

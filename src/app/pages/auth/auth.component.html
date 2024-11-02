@@ -1,75 +1,126 @@
 <div class="auth__container">
-    <div class="auth__form-container">
-        <form class="auth__form" [formGroup]="form" (submit)="onSubmit()">
-            <img class="auth__logo" src="banners/logo.png" alt="logo_clinica">
-            <h1 class="auth__titulo display-5 h3 fw-normal text-center">¡Bienvenido a Clínica Online!</h1>
-            <h2 class="auth__subtitulo text-center">Inicie sesión</h2>
-            
-            <!-- Input Correo -->
-            <div class="auth__form-input form-floating position-relative">
-                <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com"
-                    [formControl]="form.controls.email"
-                    [ngClass]="{ 'is-invalid': form.controls.email.invalid && form.controls.email.touched }">
-                <label for="floatingInput">Correo</label>
-                <!-- <i class="fas fa-envelope"></i> -->
-                <div class="invalid-feedback">
-                    @if (form.controls.email.invalid && form.controls.email.touched) {
-                        <p>
-                            @if (form.controls.email.hasError('required')) {
-                                <span>El correo es requerido.</span>
-                            }
-                            @else if (form.controls.email.hasError('email')) {
-                                <span>El correo debe tener un formato correcto.</span>
-                            }
-                        </p>
-                    }
-                </div>
-            </div>
+  <div class="auth__form-container">
+    <form class="auth__form" [formGroup]="form" (submit)="onSubmit()">
+      <img class="auth__logo" src="banners/logo.png" alt="logo_clinica" />
+      <h1 class="auth__titulo display-5 h3 fw-normal text-center">
+        ¡Bienvenido a Clínica Online!
+      </h1>
+      <h2 class="auth__subtitulo text-center">Inicie sesión</h2>
 
-            <!-- Input Contraseña -->
-            <div class="auth__form-input form-floating position-relative">
-                <input [formControl]="form.controls.password" [type]="showPassword ? 'text' : 'password'" 
-                    class="form-control" id="floatingPassword" placeholder="Password" 
-                    [ngClass]="{ 'is-invalid': form.controls.password.invalid && form.controls.password.touched }">
-                <label for="floatingPassword">Contraseña</label>
-                <!-- <i class="fas fa-lock"></i> -->
-                
-                
-                @if(!form.controls.password.invalid)
-                {
-                    <i (click)="togglePasswordVisibility()" 
-                        class="fas" [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'" 
-                        style="right: 10px; top: 50%; transform: translateY(-100%); cursor: pointer; position: absolute;"></i>
-                }
-                
+      <!-- Input Correo -->
+      <div class="auth__form-input form-floating position-relative">
+        <input
+          type="email"
+          class="form-control"
+          id="floatingInput"
+          placeholder="name@example.com"
+          [formControl]="form.controls.email"
+          [ngClass]="{
+            'is-invalid':
+              form.controls.email.invalid && form.controls.email.touched
+          }"
+        />
+        <label for="floatingInput">Correo</label>
+        <div class="invalid-feedback">
+          @if (form.controls.email.invalid && form.controls.email.touched) {
+          <p>
+            @if (form.controls.email.hasError('required')) {
+            <span>El correo es requerido.</span>
+            } @else if (form.controls.email.hasError('email')) {
+            <span>El correo debe tener un formato correcto.</span>
+            }
+          </p>
+          }
+        </div>
+      </div>
 
-                <div class="invalid-feedback">
-                    @if (form.controls.password.invalid && form.controls.password.touched) {
-                        <p>
-                            @if (form.controls.password.hasError('required')) {
-                                <span>La contraseña es requerida.</span>
-                            }
-                            @else if (form.controls.password.hasError('minlength')) {
-                                <span>La contraseña debe tener al menos 6 caracteres.</span>
-                            }
-                        </p>
-                    }
-                </div>
-            </div>
+      <!-- Input Contraseña -->
+      <div class="auth__form-input form-floating position-relative">
+        <input
+          [formControl]="form.controls.password"
+          [type]="showPassword ? 'text' : 'password'"
+          class="form-control"
+          id="floatingPassword"
+          placeholder="Password"
+          [ngClass]="{
+            'is-invalid':
+              form.controls.password.invalid && form.controls.password.touched
+          }"
+        />
+        <label for="floatingPassword">Contraseña</label>
+        @if(!form.controls.password.invalid) {
+        <i
+          (click)="togglePasswordVisibility()"
+          class="fas"
+          [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"
+          style="
+            right: 10px;
+            top: 50%;
+            transform: translateY(-100%);
+            cursor: pointer;
+            position: absolute;
+          "
+        ></i>
+        }
 
-            <!-- Botón de Iniciar Sesión -->
-            <p class="auth__create-account">¿No tienes una cuenta? <span routerLink="/sign-up/eleccion-perfil">Crear una cuenta nueva</span></p>
-            <button class="w-100 btn btn-lg btn-dark mt-3" type="submit">Iniciar Sesión</button>
-            <div class="text-center mt-4">
-                <button (click)="completarCredenciales('Administrador')" type="button" class="btn btn-warning m-1">Administrador</button>
-                <button (click)="completarCredenciales('Paciente')" type="button" class="btn btn-warning m-1">Paciente</button>
-                <button (click)="completarCredenciales('Especialista')" type="button" class="btn btn-warning m-1">Especialista</button>
-            </div>
-            <p class="mt-4 mb-3 text-muted text-center">&copy; IvanVidelaR 2024</p>
-        </form>
+        <div class="invalid-feedback">
+          @if (form.controls.password.invalid && form.controls.password.touched)
+          {
+          <p>
+            @if (form.controls.password.hasError('required')) {
+            <span>La contraseña es requerida.</span>
+            } @else if (form.controls.password.hasError('minlength')) {
+            <span>La contraseña debe tener al menos 6 caracteres.</span>
+            }
+          </p>
+          }
+        </div>
+      </div>
+
+      <!-- Botón de Iniciar Sesión -->
+      <p class="auth__create-account">
+        ¿No tienes una cuenta?
+        <span routerLink="/sign-up/eleccion-perfil"
+          >Crear una cuenta nueva</span
+        >
+      </p>
+      <button class="w-100 btn btn-lg btn-dark mt-3" type="submit">
+        Iniciar Sesión
+      </button>
+      <p class="mt-4 mb-3 text-muted text-center">&copy; IvanVidelaR 2024</p>
+    </form>
+  </div>
+  <div class="toggle-menu">
+    <div
+      class="auth__usuarios-precargados"
+      [ngStyle]="{
+        'pointer-events': isMenuOpen ? 'auto' : 'none',
+        opacity: isMenuOpen ? 1 : 0,
+        transform: isMenuOpen ? 'translateY(0)' : 'translateY(70px)'
+      }"
+    >
+      @for (usuario of usuariosPrecargados; track $index) {
+        <button
+          class="auth__usuario-precargado btn btn-lg"
+          (click)="completarCredenciales(usuario)"
+        >
+          <img
+            [src]="usuario.imagenDePerfil"
+            [alt]="usuario.email + '_img'"
+          />
+          <p>{{ usuario.perfil }}</p>
+        </button>
+      }
     </div>
+    <i (click)="toggleMenu()" 
+    [class]="isMenuOpen ? 'auth__usuarios-flecha fa-solid fa-chevron-down rotated' : 'auth__usuarios-flecha fa-solid fa-chevron-up'"></i>
+  </div>
 
-    <div class="auth__img-container">
-        <img class="auth__img" src="banners/banner-2-clinica.jpg" alt="Imagen Clínica">
-    </div>
+  <div class="auth__img-container">
+    <img
+      class="auth__img"
+      src="banners/banner-2-clinica.jpg"
+      alt="Imagen Clínica"
+    />
+  </div>
 </div>
