@@ -131,8 +131,16 @@ export class SignUpComponent {
     habilitado: new FormControl(false),
     nombre: new FormControl('', [Validators.required]),
     apellido: new FormControl('', [Validators.required]),
-    edad: new FormControl(null, [Validators.required]),
-    dni: new FormControl(null, [Validators.required]),
+    edad: new FormControl(null, [
+      Validators.required,
+      Validators.min(1),
+      Validators.max(120)
+    ]),
+    dni: new FormControl(null, [
+      Validators.required,
+      Validators.min(10000000),
+      Validators.max(100000000)
+    ]),
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [
       Validators.required,
