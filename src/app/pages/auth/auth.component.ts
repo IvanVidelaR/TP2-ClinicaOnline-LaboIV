@@ -75,7 +75,6 @@ export class AuthComponent {
   }
   
   protected toggleMenu() {
-    console.log(this.isMenuOpen);
     this.isMenuOpen = !this.isMenuOpen;
   }
 
@@ -118,6 +117,10 @@ export class AuthComponent {
               this.databaseService.getDocumentById('usuarios', email!)
             );
 
+            if (userCredentials.user.photoURL == null)
+            {
+              await this.authenticationService.updateProfileImage(userCredentials.user, usuarioDoc.imagenDePerfil);
+            }
             if (
               usuarioDoc.perfil == 'especialista' &&
               usuarioDoc.habilitado == false

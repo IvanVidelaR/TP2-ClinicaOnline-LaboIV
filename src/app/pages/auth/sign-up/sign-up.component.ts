@@ -38,7 +38,6 @@ export class SignUpComponent {
   protected perfil: string = '';
   protected isOtherSpecialty: boolean = false;
   protected generarNuevoUsuarioDesdeUsuarios: boolean = false;
-  private user?: User | null;
 
   protected especialidades: string[] = [
     'Cardiología',
@@ -57,7 +56,6 @@ export class SignUpComponent {
       this.perfil = params['perfil'];
 
       this.authenticationService.getCurrentUser().subscribe((user) => {
-        this.user = user;
         if (user?.displayName === 'administrador') {
           this.generarNuevoUsuarioDesdeUsuarios = true;
         } else {
@@ -281,8 +279,6 @@ export class SignUpComponent {
         personaData.email!
       );
     }
-
-    this.authenticationService.updateProfileImage(this.user!, personaData.imagenDePerfil)
   }
 
   protected async loadImage(
