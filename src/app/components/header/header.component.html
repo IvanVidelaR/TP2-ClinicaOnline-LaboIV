@@ -19,9 +19,7 @@
                         <a class="nav-link all-nav-link" routerLink="/mis-turnos" routerLinkActive="active">Mis turnos</a>
                     </li>
                 }
-                <li class="nav-item" (click)="signOut()" style="cursor: pointer;">
-                    <a class="nav-link last-nav-link">Sign out</a>
-                </li>
+                <app-dropdown-menu [user]="user"></app-dropdown-menu>
             }
             @else 
             {

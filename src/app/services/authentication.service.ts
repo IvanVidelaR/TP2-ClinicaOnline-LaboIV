@@ -42,6 +42,11 @@ export class AuthenticationService {
     await this.signOut();
   }
 
+  public async updateProfileImage(user: User, photoUrl: string)
+  {
+    await updateProfile(user, { photoURL: photoUrl });
+  }
+  
   async createUserWithoutSignIn(persona: Persona): Promise<void> {
     const currentUser = this.auth.currentUser;
 
