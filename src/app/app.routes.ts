@@ -46,6 +46,11 @@ export const routes: Routes = [
                 canActivate: [noAuthAdminGuard]
             },
             {
+                path: 'mis-turnos',
+                loadComponent: () =>
+                    import('./pages/mis-turnos/mis-turnos.component').then((m) => m.MisTurnosComponent)
+            },
+            {
                 path: 'error',
                 loadComponent: () => 
                     import('./pages/error/error.component').then((m) => m.ErrorComponent)
