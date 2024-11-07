@@ -1,0 +1,32 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.profile-container {
+  max-width: 800px;
+  margin: auto;
+  padding: 2rem;
+  background-color: #f4f4f9;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.day-schedule {
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.time-select label {
+  margin-right: 5px;
+}
+
+select {
+  padding: 5px;
+  margin-right: 10px;
+}

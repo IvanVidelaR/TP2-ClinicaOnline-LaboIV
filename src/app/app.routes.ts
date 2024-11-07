@@ -1,6 +1,8 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './guards/auth.guard';
 import { noAuthAdminGuard } from './guards/no-auth-admin.guard';
+import { noAuthGuard } from './guards/no-auth.guard';
+import { MisHorariosComponent } from './pages/mis-horarios/mis-horarios.component';
 
 export const routes: Routes = [
     {
@@ -49,6 +51,18 @@ export const routes: Routes = [
                 path: 'mis-turnos',
                 loadComponent: () =>
                     import('./pages/mis-turnos/mis-turnos.component').then((m) => m.MisTurnosComponent)
+            },
+            {
+                path: 'mi-perfil',
+                loadComponent: () =>
+                    import('./pages/mi-perfil/mi-perfil.component').then((m) => m.MiPerfilComponent),
+                canActivate: [noAuthGuard]
+            },
+            {
+                path: 'mis-horarios',
+                loadComponent: () =>
+                    import('./pages/mis-horarios/mis-horarios.component').then((m) => MisHorariosComponent),
+                canActivate: [noAuthGuard]
             },
             {
                 path: 'error',

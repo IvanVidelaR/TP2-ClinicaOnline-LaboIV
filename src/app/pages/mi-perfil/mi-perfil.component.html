@@ -1,0 +1,44 @@
+<div class="container">
+  @if(loading)
+  {
+    <app-loader></app-loader>
+  }
+  @else 
+  {
+    <div class="profile-container">
+      <h1>Mi Perfil</h1>
+      <div class="profile-info-container">
+        <div class="profile-main-info">
+          <img [src]="usuario?.imagenDePerfil" alt="Imagen de perfil">
+          <div class="profile-main-description">
+            <h2>{{usuario?.nombre}} {{usuario?.apellido}}</h2>
+            <p class="email">{{usuario?.email}}</p>
+          </div>
+        </div>
+        <div class="profile-info-atributos-secundarios">
+          <p><strong>Perfil: </strong><span>{{usuario?.perfil}}</span></p>
+          <p><strong>Edad: </strong> <span>{{usuario?.edad}}</span></p>
+          <p><strong>DNI: </strong> <span>{{usuario?.dni}}</span></p>
+
+          @if(usuario?.perfil == 'especialista')
+          {
+            <p><strong>Especialidades: </strong> <span>{{usuario?.especialidad}}</span></p>
+            <p><strong>Habilitado: </strong> <span>{{usuario?.habilitado ? 'Si' : 'No'}}</span></p>
+          }
+          @else if(usuario?.perfil == 'paciente')
+          {
+            <p><strong>Obra Social: </strong><span>{{usuario?.obraSocial}}</span></p>
+            <div class="second-profile-image">
+              <img [src]="usuario?.segundaImagenDePerfil" alt="Segunda imagen de perfil">
+            </div>
+          }
+        </div>
+        @if(usuario?.perfil == 'especialista')
+        {
+          <button routerLink="/mis-horarios" type="button" class="btn btn-dark mt-2 w-100">Mis horarios</button>
+        }
+      </div>
+    </div>
+  }
+</div>
+  

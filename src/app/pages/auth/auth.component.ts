@@ -91,6 +91,7 @@ export class AuthComponent {
       email: usuario.email,
       password: usuario.password,
     });
+    this.isMenuOpen = !this.isMenuOpen;
   }
 
 

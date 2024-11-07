@@ -3,20 +3,22 @@ import { User } from '@angular/fire/auth';
 import { toast } from 'ngx-sonner';
 import { AuthenticationService } from '../../services/authentication.service';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dropdown-menu',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   template: `
     <div class="dropdown">
       <button class="dropdown-toggle-button" (click)="toggleMenu()">
         <img [src]="user?.photoURL" alt="userImage" [ngClass]="{'clicked-logo': isMenuOpen}">
       </button>
       <ul class="dropdown-menu" [ngStyle]="{'pointer-events': isMenuOpen ? 'auto' : 'none', 'opacity': isMenuOpen ? 1 : 0, 'transform': isMenuOpen ? 'translateY(0)' : 'translateY(-10px)'}">
-        <li class="cuenta">
+        <li class="cuenta" routerLink="/mi-perfil" (click)="toggleMenu()">
           <i class="fa-regular fa-user icon"></i>
-          Profile
+          Mi Perfil
         </li>
         <li class="signOut" (click)="signOut()">
           <i class="fa-solid fa-right-from-bracket icon"></i>
@@ -46,7 +48,6 @@ import { CommonModule } from '@angular/common';
     .dropdown-menu {
       position: absolute;
       top: calc(100% + .25rem);
-      padding: 1rem 0;
       border-radius: .25rem;
       right: 0;
       background-color: white;
@@ -64,7 +65,6 @@ import { CommonModule } from '@angular/common';
       background-color: var(--hover-secondary);
       color: #000;
       border-radius: 50px;
-      padding: .5em 1em;
       border: none;
       cursor: pointer;
       font-family: "Inter", sans-serif;
@@ -110,14 +110,16 @@ export class DropdownMenuComponent {
   @Input() user?: User | null;
   
   private authenticationService = inject(AuthenticationService);
-  
-  isMenuOpen = false;
+  protected router = inject(Router);
 
-  toggleMenu() {
+  protected isMenuOpen = false;
+
+  protected toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
   }
 
-  signOut() {
+  protected signOut() {
+    this.isMenuOpen = false;
     const promise = new Promise((resolve, reject) => {
       try {
         setTimeout(() => {

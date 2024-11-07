@@ -11,7 +11,8 @@ export const noAuthGuard: CanActivateFn = (route, state) => {
     authenticationService.getAuth().onAuthStateChanged((auth: User | null) => {
       if (!auth)
       {
-        router.navigateByUrl('/auth', {replaceUrl: true})
+        router.navigateByUrl('/auth', { replaceUrl: true });
+        resolve(false);
       }
       else
       {
@@ -19,7 +20,4 @@ export const noAuthGuard: CanActivateFn = (route, state) => {
       }
     })
   });
-
-  return true;
-
 };

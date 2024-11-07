@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DropdownMenuComponent } from './dropdown-menu.component';
+import { MiPerfilComponent } from './mi-perfil.component';
 
-describe('DropdownMenuComponent', () => {
-  let component: DropdownMenuComponent;
-  let fixture: ComponentFixture<DropdownMenuComponent>;
+describe('MiPerfilComponent', () => {
+  let component: MiPerfilComponent;
+  let fixture: ComponentFixture<MiPerfilComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DropdownMenuComponent]
+      imports: [MiPerfilComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(DropdownMenuComponent);
+    fixture = TestBed.createComponent(MiPerfilComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
