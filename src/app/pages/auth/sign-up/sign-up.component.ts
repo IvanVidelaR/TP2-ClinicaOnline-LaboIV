@@ -18,11 +18,12 @@ import { Especialista } from '../../../models/especialista.model';
 import { DatabaseService } from '../../../services/database.service';
 import { StorageService } from '../../../services/storage.service';
 import { FirebaseError } from '@angular/fire/app';
+import { RecaptchaModule, RecaptchaFormsModule } from 'ng-recaptcha';
 
 @Component({
   selector: 'app-sign-up',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, RouterLink],
+  imports: [ReactiveFormsModule, CommonModule, RouterLink, RecaptchaModule, RecaptchaFormsModule ],
   templateUrl: './sign-up.component.html',
   styleUrl: './sign-up.component.css',
 })
@@ -38,7 +39,7 @@ export class SignUpComponent {
   protected perfil: string = '';
   protected isOtherSpecialty: boolean = false;
   protected generarNuevoUsuarioDesdeUsuarios: boolean = false;
-
+  
   protected especialidades: string[] = [
     'Cardiología',
     'Pediatría',
@@ -144,8 +145,16 @@ export class SignUpComponent {
     otraEspecialidad: new FormControl(''),
     obraSocial: new FormControl(''),
     segundaImagenDePerfil: new FormControl(''),
+    recaptchaReactive: new FormControl(null, Validators.required)
   });
 
+  // protected onCaptchaResolved(response: string | null) {
+  //     if (response) {
+  //       this.form.controls['recaptcha'].setValue(response); // Almacena el token en el control
+  //     } else {
+  //       this.form.controls['recaptcha'].setErrors({ 'incorrect': true });
+  //     }
+  // }
   protected async onSubmit() {
     if (this.form.valid) {
       const promise = new Promise<any>(async (resolve, reject) => {
