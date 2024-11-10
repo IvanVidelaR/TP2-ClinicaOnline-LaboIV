@@ -12,11 +12,17 @@
                     <li class="nav-item">
                         <a class="nav-link all-nav-link" routerLink="/usuarios" routerLinkActive="active">Usuarios</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link all-nav-link" routerLink="/solicitar-turno" routerLinkActive="active">Solicitar turno</a>
+                    </li>
                 }
                 @else if(user.displayName == 'paciente')
                 {
                     <li class="nav-item">
                         <a class="nav-link all-nav-link" routerLink="/mis-turnos" routerLinkActive="active">Mis turnos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link all-nav-link" routerLink="/solicitar-turno" routerLinkActive="active">Solicitar turno</a>
                     </li>
                 }
                 <app-dropdown-menu [user]="user"></app-dropdown-menu>

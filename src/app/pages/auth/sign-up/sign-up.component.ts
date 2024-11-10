@@ -19,6 +19,8 @@ import { DatabaseService } from '../../../services/database.service';
 import { StorageService } from '../../../services/storage.service';
 import { FirebaseError } from '@angular/fire/app';
 import { RecaptchaModule, RecaptchaFormsModule } from 'ng-recaptcha';
+import { Especialidad } from '../../../models/especialidad.model';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-sign-up',
@@ -40,17 +42,7 @@ export class SignUpComponent {
   protected isOtherSpecialty: boolean = false;
   protected generarNuevoUsuarioDesdeUsuarios: boolean = false;
   
-  protected especialidades: string[] = [
-    'Cardiología',
-    'Pediatría',
-    'Neurología',
-    'Ginecología',
-    'Odontología',
-    'Traumatología',
-    'Radiología',
-    'Nutrición',
-    'Oftalmología',
-  ];
+  protected especialidades: Especialidad[] = []
 
   constructor(private route: ActivatedRoute) {
     this.route.params.subscribe((params) => {
@@ -65,6 +57,7 @@ export class SignUpComponent {
       });
 
       if (this.perfil === 'especialista') {
+        this.databaseService.getDocument('especialidades').subscribe((especialidades: Especialidad[]) => this.especialidades = especialidades);
         this.form.get('especialidad')?.setValidators([Validators.required]);
         this.form.get('especialidad')?.updateValueAndValidity();
       } else if (this.perfil === 'paciente') {
@@ -103,10 +96,16 @@ export class SignUpComponent {
     if (this.form.value.otraEspecialidad == '') return;
 
     if (this.form.value.otraEspecialidad) {
-      const specialty = this.capitalizeFirstLetter(
+      const especialidadTexto = this.capitalizeFirstLetter(
         this.form.value.otraEspecialidad.trim()
       );
-      this.especialidades.push(specialty);
+
+      const especialidad: Especialidad = {
+        tipo: especialidadTexto,
+        imagen: 'https://firebasestorage.googleapis.com/v0/b/tp2-clinicaonline-ivanvidelar.appspot.com/o/especialidades%2Frevision-medica.png?alt=media&token=a3007e82-a1f2-4614-9087-2691da10ed78'
+      }
+      this.databaseService.setDocument('especialidades', especialidad);
+      // this.especialidades.push(especialidad);
     }
 
     this.form.controls.otraEspecialidad.setValue('');

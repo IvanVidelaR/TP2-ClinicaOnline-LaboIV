@@ -61,7 +61,13 @@ export const routes: Routes = [
             {
                 path: 'mis-horarios',
                 loadComponent: () =>
-                    import('./pages/mis-horarios/mis-horarios.component').then((m) => MisHorariosComponent),
+                    import('./pages/mis-horarios/mis-horarios.component').then((m) => m.MisHorariosComponent),
+                canActivate: [noAuthGuard]
+            },
+            {
+                path: 'solicitar-turno',
+                loadComponent: () => 
+                    import('./pages/solicitar-turno/solicitar-turno.component').then((m) => m.SolicitarTurnoComponent),
                 canActivate: [noAuthGuard]
             },
             {

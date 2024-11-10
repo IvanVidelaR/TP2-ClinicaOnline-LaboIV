@@ -163,7 +163,10 @@
                         <option value="" disabled>Seleccione una o más especialidades</option>
                         @for (especialidad of especialidades; track $index) 
                         {
-                            <option [value]="especialidad">{{ especialidad }}</option>
+                            <option [value]="especialidad.tipo">{{ especialidad.tipo }}</option>
+                        }
+                        @empty {
+                            <option value="" disabled>Cargando especialidades...</option>
                         }
                     </select>
                     <div class="invalid-feedback"> 
