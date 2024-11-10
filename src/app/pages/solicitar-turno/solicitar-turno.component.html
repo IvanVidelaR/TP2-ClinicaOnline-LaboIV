@@ -1,32 +1,94 @@
 <div class="container">
-  @if (loading) {
-  <app-loader></app-loader>
-  } @else {
-  <h1>Solicitar Turno</h1>
-  <h2>Elija una especialidad:</h2>
-  <div class="especialidades-container">
-    @for (especialidad of especialidades; track $index) {
-    <div class="opcion" [class.seleccionada]="especialidad.tipo === especialidadSeleccionada">
-      <img
-        [src]="especialidad.imagen"
-        
-        [alt]="'img_' + especialidad.tipo"
-        (click)="seleccionarEspecialidad(especialidad.tipo)"
-      />
-    </div>
+  @if (loading) 
+  {
+    <app-loader></app-loader>
+  } 
+  @else 
+  {
+    @if(user?.displayName == 'administrador')
+    {
+      <h1>Solicitar Turno</h1>
+      <h2>Elija un paciente:</h2>
+      <div class="especialistas-pacientes-container">
+        @for (paciente of pacientes; track $index) {
+          <div class="opcion" [class.seleccionada]="paciente === pacienteSeleccionado" (click)="seleccionarPaciente(paciente)">
+            <img
+              [src]="paciente.imagenDePerfil"
+              [alt]="'img_' + paciente.email"
+            />
+            <p>{{ paciente.nombre }} {{ paciente.apellido }} {{paciente.email}}</p>
+          </div>
+        }
+      </div>
+
+      @if(pacienteSeleccionado)
+      {
+        <h2>Elija una especialidad:</h2>
+        <div class="especialidades-container">
+          @for (especialidad of especialidades; track $index) {
+            <div class="opcion" [class.seleccionada]="especialidad.tipo === especialidadSeleccionada" (click)="seleccionarEspecialidad(especialidad.tipo)">
+              <img
+                [src]="especialidad.imagen"
+                [alt]="'img_' + especialidad.tipo"
+              />
+            </div>
+          }
+        </div>
+      }
     }
-  </div>
-  @if(especialidadSeleccionada !== '') { @if (especialistasEspecialidad.length > 0) {
-  <h2>Elija un especialista:</h2>
-  @for(especialista of especialistasEspecialidad; track $index) {
-  <div class="opcion">
-    <img
-      [src]="especialista.imagenDePerfil"
-      [alt]="'img_' + especialista.apellido"
-    />
-    <p>{{ especialista.nombre }} {{ especialista.apellido }}</p>
-  </div>
-  } } @else {
-  <h2>No hay especialistas</h2>
-  } } }
+    @else 
+    { 
+      <h1>Solicitar Turno</h1>
+      <h2>Elija una especialidad:</h2>
+      <div class="especialidades-container">
+        @for (especialidad of especialidades; track $index) {
+          <div class="opcion" [class.seleccionada]="especialidad.tipo === especialidadSeleccionada" (click)="seleccionarEspecialidad(especialidad.tipo)">
+            <img
+              [src]="especialidad.imagen"
+              [alt]="'img_' + especialidad.tipo"
+            />
+          </div>
+        }
+      </div>
+    }
+    @if(especialidadSeleccionada !== '') 
+    { 
+      <h2>Elija un especialista:</h2>
+      <div class="especialistas-pacientes-container">
+        @for(especialista of especialistasEspecialidad; track $index) {
+          <div class="opcion" [class.seleccionada]="especialista === especialistaSeleccionado"(click)="seleccionarEspecialista(especialista)" >
+            <img
+              [src]="especialista.imagenDePerfil"
+              [alt]="'img_' + especialista.email"
+            />
+            <p>{{ especialista.nombre }} {{ especialista.apellido }}</p>
+          </div>
+        }
+        @empty {
+          <p style="margin: 0;">No hay especialistas</p>
+        } 
+      </div>
+    } 
+
+    @if(especialistaSeleccionado)
+    {
+      <h2>Elija una fecha y horario: </h2>
+      <div class="horarios-container">
+          @for (dia of diasDisponibles; track $index) 
+          {
+              @for(turno of dia.turnos; track $index)
+              {
+                <div class="horario" [class.seleccionado]="turno === turnoSeleccionado" (click)="seleccionarTurno(turno)">
+                  {{ dia.dia | date: 'dd/MM' }} - {{ turno.hora | date: 'HH:mm' }}
+                </div>
+              }
+          }
+      </div>
+    }
+
+    @if(turnoSeleccionado)
+    {
+      <button type="button" class="btn btn-dark mt-2" (click)="solicitarTurno()">Solicitar turno</button>
+    }
+  }
 </div>

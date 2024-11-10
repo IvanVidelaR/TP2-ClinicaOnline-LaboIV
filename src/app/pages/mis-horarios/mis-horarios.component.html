@@ -8,7 +8,7 @@
     <div class="profile-container">
       <h2>Gestionar horarios</h2>
     <form [formGroup]="disponibilidadForm" (ngSubmit)="guardarDisponibilidad()">
-      @for (dia of ['lunes', 'martes', 'miercoles', 'jueves', 'viernes']; track $index) 
+      @for (dia of ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado']; track $index) 
       {
         <div [formGroupName]="dia">
           <div class="day-schedule">
@@ -16,16 +16,36 @@
             <div class="time-select">
               <label>Inicio</label>
               <select formControlName="inicio">
-                @for (horario of horarios; track $index) 
+                @if(dia == 'sabado')
                 {
-                  <option [value]="horario">{{ horario }}</option>
+                  @for (horario of horariosFinde; track $index) 
+                  {
+                    <option [value]="horario">{{ horario }}</option>
+                  }
+                }
+                @else 
+                {
+                  @for (horario of horarios; track $index) 
+                  {
+                    <option [value]="horario">{{ horario }}</option>
+                  }
                 }
               </select>
               <label>Fin</label>
               <select formControlName="fin">
-                @for (horario of horarios; track $index) 
+                @if(dia == 'sabado')
                 {
-                  <option [value]="horario">{{ horario }}</option>
+                  @for (horario of horariosFinde; track $index) 
+                  {
+                    <option [value]="horario">{{ horario }}</option>
+                  }
+                }
+                @else 
+                {
+                  @for (horario of horarios; track $index) 
+                  {
+                    <option [value]="horario">{{ horario }}</option>
+                  }
                 }
               </select>
             </div>

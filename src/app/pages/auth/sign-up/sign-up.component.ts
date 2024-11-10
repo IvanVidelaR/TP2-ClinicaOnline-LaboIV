@@ -240,6 +240,38 @@ export class SignUpComponent {
         ...personaData,
         especialidad: formData.especialidad!,
         habilitado: formData.habilitado!,
+        disponibilidad:  [
+          {
+            dia: "lunes",
+            horarioInicio: "08:00",
+            horarioFin: "19:00"
+          },
+          {
+            dia: "martes",
+            horarioInicio: "08:00",
+            horarioFin: "19:00"
+          },
+          {
+            dia: "miercoles",
+            horarioInicio: "08:00",
+            horarioFin: "19:00"
+          },
+          {
+            dia: "jueves",
+            horarioInicio: "08:00",
+            horarioFin: "19:00"
+          },
+          {
+            dia: "viernes",
+            horarioInicio: "08:00",
+            horarioFin: "19:00"
+          },
+          {
+            dia: "sabado",
+            horarioInicio: "08:00",
+            horarioFin: "14:00"
+          }
+        ]
       };
 
       await this.databaseService.setDocument(

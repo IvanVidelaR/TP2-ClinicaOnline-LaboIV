@@ -37,7 +37,7 @@
   gap: 5px
 }
 
-.opcion:hover {
+.opcion:hover, .horario:hover {
   transform: scale(1.05); 
   cursor: pointer;
 }
@@ -55,7 +55,33 @@
   margin: 0;
 }
 
-.opcion.seleccionada {
+.opcion.seleccionada, .horario.seleccionado {
   background-color: #c0c8e0;
   border-color: #8492c4; 
+}
+
+.horarios-container, .especialistas-pacientes-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  overflow-y: auto;
+  max-width: 1000px;
+  max-height: 500px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  background-color: #fafafa;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
+  gap: 15px;
+}
+
+.horario {
+  width: 120px;
+  background-color: #e0e0e0; 
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); 
+  border: 1px solid #ccc; 
+  transition: transform 0.2s ease;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
 }

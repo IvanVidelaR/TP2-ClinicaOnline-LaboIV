@@ -45,14 +45,20 @@ export class MisHorariosComponent implements OnInit{
     viernes: this.fb.group({
       inicio: ['', Validators.required],
       fin: ['', Validators.required],
-    })
+    }),
+    sabado: this.fb.group({
+      inicio: ['', Validators.required],
+      fin: ['', Validators.required],
+    }),
   });
 
   protected disponibilidad: Disponibilidad[] = [];
   protected horarios: string[] = [];
+  protected horariosFinde: string[] = [];
 
   constructor() {
-    this.generarHorarios();
+    this.generarHorarios(14);
+    this.generarHorarios(19);
   }
 
   ngOnInit(): void {
@@ -90,17 +96,20 @@ export class MisHorariosComponent implements OnInit{
     }
   }
 
-  generarHorarios() {
+  generarHorarios(horarioFin: number) {
     const startTime = new Date();
     startTime.setHours(8, 0, 0, 0);
     const endTime = new Date();
-    endTime.setHours(19, 0, 0, 0);
+    endTime.setHours(horarioFin, 0, 0, 0);
     const interval = 30; 
 
     while (startTime <= endTime) {
       const hours = startTime.getHours().toString().padStart(2, '0');
       const minutes = startTime.getMinutes().toString().padStart(2, '0');
-      this.horarios.push(`${hours}:${minutes}`);
+      if (horarioFin == 14)
+        this.horariosFinde.push(`${hours}:${minutes}`);
+      else
+        this.horarios.push(`${hours}:${minutes}`);
       startTime.setMinutes(startTime.getMinutes() + interval);
     }
   }
@@ -110,14 +119,14 @@ export class MisHorariosComponent implements OnInit{
     {
       const promise = new Promise(async (resolve, reject) => {
         try {
-          const dias = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes'];
+          const dias = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
           this.disponibilidad = [];
 
           dias.forEach(dia => {
             const diaData = this.disponibilidadForm.get(dia)?.value;
             if (diaData && diaData.inicio && diaData.fin) {
               this.disponibilidad.push({
-                dia: dia.charAt(0).toUpperCase() + dia.slice(1),
+                dia: dia,
                 horarioInicio: diaData.inicio,
                 horarioFin: diaData.fin
               });
@@ -161,7 +170,8 @@ export class MisHorariosComponent implements OnInit{
       martes: { inicio: '08:00', fin: '19:00' },
       miercoles: { inicio: '08:00', fin: '19:00' },
       jueves: { inicio: '08:00', fin: '19:00' },
-      viernes: { inicio: '08:00', fin: '19:00' }
+      viernes: { inicio: '08:00', fin: '19:00' },
+      sabado: {inicio: '8:00', fin: '14:00'}
     });
   }
 }
