@@ -22,23 +22,18 @@ export class UsuariosComponent implements OnInit {
     this.traerUsuarios();
   }
 
-  private async traerUsuarios() {
-    try {
-      this.loading = true;
-      const response: any = await firstValueFrom(
-        this.databaseService.getDocument('usuarios')
-      );
-
-      response.forEach((usuario: Usuario) => {
-        this.usuarios.push(usuario);
-      });
-    } catch (error: any) {
-      console.log(
-        'Error al traer productos del listado de productos: ' + error.message
-      );
-    } finally {
-      this.loading = false;
-    }
+  private traerUsuarios() {
+    this.loading = true;
+    this.databaseService.getDocument('usuarios').subscribe({
+      next: (response: Usuario[]) => {
+        this.usuarios = response; 
+        this.loading = false;
+      },
+      error: (error) => {
+        console.log('Error al traer productos del listado de productos: ' + error.message);
+        this.loading = false;
+      }
+    });
   }
 
   protected async cambiarHabilitadoEspecialista(usuario: Usuario, indice: number) {

@@ -1,6 +1,6 @@
 <div class="container-fluid">
   <div class="row justify-content-center" >
-    <div class="col-md-10">
+    <div class="col-12">
       <div class="card shadow-lg">
         <div class="card-header bg-dark text-white">
           <h2 class="mb-0 text-center">Tabla de usuarios:</h2>
@@ -16,7 +16,7 @@
                   <th scope="col">Edad</th>
                   <th scope="col">DNI</th>
                   <th scope="col">Mail</th>
-                  <th scope="col">Imagen de perfil</th>
+                  <th scope="col">Imagen</th>
                   <th scope="col">Especialidades</th>
                   <th scope="col">Obra Social</th>
                   <th scope="col">Segunda imagen de perfil</th>
@@ -47,7 +47,7 @@
                   @if(usuario.perfil == 'especialista') {
                   <td>{{ usuario.especialidad }}</td>
                   } @else {
-                  <td>{{ usuario.perfil }} no tiene especialidad</td>
+                  <td>NO TIENE</td>
                   } @if(usuario.perfil == 'paciente') {
                   <td>{{ usuario.obraSocial }}</td>
                   <td>
@@ -59,11 +59,10 @@
                     />
                   </td>
                   } @else {
-                  <td>{{ usuario.perfil }} no tiene obra social</td>
-                  <td>
-                    {{ usuario.perfil }} no tiene segunda imagen de perfil
-                  </td>
-                  } @if(usuario.perfil == 'especialista') {
+                  <td>NO TIENE</td>
+                  <td>NO TIENE</td>
+                  } 
+                  @if(usuario.perfil == 'especialista') {
                     @if(!usuarioLoading[usuario.email])
                     {
                       <td>
@@ -85,7 +84,11 @@
                         <div style="margin-left: 23px;" class="lds-ring"><div></div><div></div><div></div><div></div></div>                          
                       </td>
                     }
-                    
+                  }
+                  @else {
+                    <td>
+                      SIN ACCIÓN
+                    </td>
                   }
                 </tr>
                 } @empty {
