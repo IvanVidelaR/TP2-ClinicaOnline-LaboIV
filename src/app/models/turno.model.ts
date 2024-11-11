@@ -4,7 +4,8 @@ export interface Turno {
   especialistaEmail: string,
   pacienteEmail: string,
   especialidad: string,
-  estado: string
+  estado: 'pendiente' | 'cancelado' | 'realizado' | 'rechazado' | 'aceptado'
+  canceladoPor?: 'paciente' | 'administrador' | 'especialista'
   especialistaNombreCompleto?: string 
   pacienteNombreCompleto?: string 
   comentario?: string

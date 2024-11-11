@@ -45,6 +45,11 @@ export class DatabaseService {
     return document.update({ [field]: value });
   }
   
+  public updateDocumentFields(path: string, documentId: string, data: { [field: string]: any }): Promise<void> {
+    const document = this.firestore.collection(path).doc(documentId);
+    return document.update(data);
+  }
+  
   convertTimestampToDate(timestamp: Timestamp): Date {
     return new Date(timestamp.seconds * 1000);
   }

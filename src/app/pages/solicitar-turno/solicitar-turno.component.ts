@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { LoaderComponent } from "../../components/loader/loader.component";
 import { DatabaseService } from '../../services/database.service';
 import { Especialidad } from '../../models/especialidad.model';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, Subscription } from 'rxjs';
 import { Usuario } from '../../models/usuario.model';
 import { Especialista } from '../../models/especialista.model';
 import { DatePipe } from '@angular/common';
@@ -39,50 +39,67 @@ export class SolicitarTurnoComponent implements OnInit{
   protected pacientes: Paciente[] = [];
   protected pacienteSeleccionado: Paciente | null = null;
 
+  protected turnos: Turno[] = [];
+  private subscriptions: Subscription = new Subscription();
+
   ngOnInit(): void {
-    this.authenticationService.getCurrentUser().subscribe((user: User | null) => {
+    const authSub = this.authenticationService.getCurrentUser().subscribe((user: User | null) => {
       this.user = user;
       if (this.user?.displayName == 'administrador')
-        this.traerPacientes();
+        this.traerUsuarios();
       this.traerEspecialidades();
+      this.traerTurnos();
     });
+    this.subscriptions.add(authSub);
   }
 
-  async traerPacientes()
-  {
-    try
-    {
-      this.loading = true;
-      const usuarios: any = await firstValueFrom(this.databaseService.getDocument('usuarios'));
-      this.pacientes = usuarios.filter((usuario: any) => usuario.perfil == 'paciente');
-    }
-    catch (error)
-    {
-      console.log(error);
-    }
-    finally
-    {
-      this.loading = false;
-    }
+  traerUsuarios() {
+    this.loading = true;
+    const usuariosSub = this.databaseService.getDocument('usuarios').subscribe({
+      next: (usuarios: any) => {
+        this.pacientes = usuarios.filter((usuario: any) => usuario.perfil === 'paciente');
+        this.especialistas = usuarios.filter((usuario: any) => usuario.perfil === 'especialista');
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error(error);
+        this.loading = false;
+      }
+    });
+    this.subscriptions.add(usuariosSub);
   }
-
-  async traerEspecialidades()
-  {
-    try
-    {
-      this.loading = true;
-      this.especialidades = await firstValueFrom(this.databaseService.getDocument('especialidades')); 
-      const usuarios: any = await firstValueFrom(this.databaseService.getDocument('usuarios'));
-      this.especialistas = usuarios.filter((usuario: any) => usuario.perfil == 'especialista');
-    }
-    catch (error)
-    {
-      console.log(error);
-    }
-    finally
-    {
-      this.loading = false;
-    }
+  
+  traerTurnos() {
+    this.loading = true;
+    const turnosSub = this.databaseService.getDocument('turnos').subscribe({
+      next: (turnos: any[]) => {
+        this.turnos = turnos.map((turno) => {
+          turno.hora = this.databaseService.convertTimestampToDate(turno.hora);
+          return turno;
+        });
+        this.loading = false;
+          
+      },
+      error: (error) => {
+        console.error(error);
+        this.loading = false;
+      }
+    });
+    this.subscriptions.add(turnosSub);
+  }
+  
+  traerEspecialidades() {
+    this.loading = true;
+    const especialidadesSub = this.databaseService.getDocument('especialidades').subscribe({
+      next: (especialidades: Especialidad[]) => {
+        this.especialidades = especialidades;
+      },
+      error: (error) => {
+        console.error(error);
+        this.loading = false;
+      }
+    });
+    this.subscriptions.add(especialidadesSub);
   }
 
   seleccionarEspecialidad(tipoEspecialidad : string)
@@ -157,16 +174,30 @@ export class SolicitarTurnoComponent implements OnInit{
   
       const endTime = new Date(date);
       endTime.setHours(endHour, endMinute, 0, 0);
-  
+      
       while (currentTime < endTime) {
-        if (this.user?.displayName == 'administrador')
+        const horarioTurno: Date = new Date(currentTime);
+        let existeTurno: boolean = false;
+
+        this.turnos.forEach((turno: Turno) => {
+          if ((horarioTurno.getTime() === turno.hora.getTime() && (turno.especialistaEmail == this.especialistaSeleccionado!.email || turno.pacienteEmail == this.pacienteSeleccionado?.email || turno.pacienteEmail == this.user!.email)) && (!(turno.canceladoPor == 'paciente')))
+          {
+            existeTurno = true;
+          }
+        })
+        
+        if (!existeTurno)
         {
-          turnos.push({ hora: new Date(currentTime), especialistaEmail: this.especialistaSeleccionado!.email, pacienteEmail: this.pacienteSeleccionado!.email!, especialidad: this.especialidadSeleccionada, estado: 'pendiente'});
+          if (this.user?.displayName == 'administrador')
+          {
+            turnos.push({ hora: horarioTurno, especialistaEmail: this.especialistaSeleccionado!.email, pacienteEmail: this.pacienteSeleccionado!.email!, especialidad: this.especialidadSeleccionada, estado: 'pendiente'});
+          }
+          else
+          {
+            turnos.push({ hora: horarioTurno, especialistaEmail: this.especialistaSeleccionado!.email, pacienteEmail: this.user!.email!, especialidad: this.especialidadSeleccionada, estado: 'pendiente'});
+          }
         }
-        else
-        {
-          turnos.push({ hora: new Date(currentTime), especialistaEmail: this.especialistaSeleccionado!.email, pacienteEmail: this.user!.email!, especialidad: this.especialidadSeleccionada, estado: 'pendiente'});
-        }
+
         currentTime.setMinutes(currentTime.getMinutes() + 30);
       }
     }
@@ -198,5 +229,9 @@ export class SolicitarTurnoComponent implements OnInit{
       },
       error: 'ERROR - No se pudo agendar el turno.'
     });
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe(); 
   }
 }

@@ -99,7 +99,8 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closeModalMotivo()"></button>
         </div>
         <div class="modal-body">
-          {{turnoSeleccionado?.comentario}}
+          <p>{{turnoSeleccionado?.comentario}}</p>
+          <p style="text-align: right;">- Cancelado por: {{turnoSeleccionado?.canceladoPor | titlecase}} -</p>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary w-100" data-bs-dismiss="modal" (click)="closeModalMotivo()">Ok</button>

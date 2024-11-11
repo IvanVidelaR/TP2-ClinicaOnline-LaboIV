@@ -7,6 +7,8 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { toast } from 'ngx-sonner';
 import { Subscription } from 'rxjs';
+import { User } from '@angular/fire/auth';
+import { AuthenticationService } from '../../services/authentication.service';
 
 @Component({
   selector: 'app-turnos',
@@ -25,11 +27,18 @@ export class TurnosComponent implements OnDestroy {
   protected comentarioCancelacion: string = '';
 
   private subscriptions: Subscription = new Subscription();
+  private authenticationService = inject(AuthenticationService);
 
-  public ngOnInit(): void {
+  protected user?: User | null;
+
+  ngOnInit(): void {
+    const authSub = this.authenticationService.getCurrentUser().subscribe((user: User | null) => {
+      this.user = user;
+    });
+    this.subscriptions.add(authSub);
     this.traerTurnos();
   }
-  
+
   private traerTurnos(): void {
     this.loading = true;
     
@@ -104,8 +113,11 @@ export class TurnosComponent implements OnDestroy {
     const promise = new Promise(async (resolve, reject) => {
       try {
         if (this.turnoSeleccionado) {
-          await this.databaseService.updateDocumentField('turnos', this.turnoSeleccionado.id!, 'estado', 'cancelado');
-          await this.databaseService.updateDocumentField('turnos', this.turnoSeleccionado.id!, 'comentario', this.comentarioCancelacion);
+          await this.databaseService.updateDocumentFields('turnos', this.turnoSeleccionado.id!, {
+            estado: 'cancelado',
+            comentario: this.comentarioCancelacion,
+            canceladoPor: this.user?.displayName
+          });
           this.turnoSeleccionado = null;
         }
         resolve(true);
@@ -129,6 +141,6 @@ export class TurnosComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.unsubscribe(); // Desuscribe todas las suscripciones activas
+    this.subscriptions.unsubscribe(); 
   }
 }

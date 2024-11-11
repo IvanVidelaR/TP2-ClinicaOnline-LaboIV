@@ -79,7 +79,7 @@
               @for(turno of dia.turnos; track $index)
               {
                 <div class="horario" [class.seleccionado]="turno === turnoSeleccionado" (click)="seleccionarTurno(turno)">
-                  {{ dia.dia | date: 'dd/MM' }} - {{ turno.hora | date: 'HH:mm' }}
+                  {{ turno.hora | date: 'dd/MM - HH:mm' }}
                 </div>
               }
           }
