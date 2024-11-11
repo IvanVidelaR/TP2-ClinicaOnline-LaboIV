@@ -2,20 +2,21 @@
   <div class="row justify-content-center" >
     <div class="col-12">
       <div class="card shadow-lg">
-        <div class="card-header bg-dark text-white">
+        <div class="card-header text-white main-background-color">
           <h2 class="mb-0 text-center">Tabla de turnos:</h2>
         </div>
         <div class="card-body">
-          <div class="table-responsive">
+          <input id="buscador" (keyup)="buscarPalabras($event)" type="text" class="search__input w-100" placeholder="Buscar ...">
+          <div class="table-responsive"> 
             <table class="table table-striped table-hover">
-              <thead>
+              <thead >
                 <tr>
-                  <th scope="col">Paciente</th>
-                  <th scope="col">Especialista</th>
-                  <th scope="col">Tipo</th>
-                  <th scope="col">Fecha</th>
-                  <th scope="col">Estado</th>
-                  <th scope="col">Acciones</th>
+                  <th scope="col" class="main-color">Paciente</th>
+                  <th scope="col" class="main-color">Especialista</th>
+                  <th scope="col" class="main-color">Tipo</th>
+                  <th scope="col" class="main-color">Fecha</th>
+                  <th scope="col" class="main-color">Estado</th>
+                  <th scope="col" class="main-color">Acciones</th>
                 </tr>
               </thead>
               <tbody>
@@ -24,36 +25,44 @@
                     <td colspan="11" class="text-center">Cargando turnos...</td>
                   </tr>
                 } @else { @for (turno of turnos; track $index) {
-                  <tr>
-                    <td>{{ turno.pacienteNombreCompleto }}</td>
-                    <td>{{ turno.especialistaNombreCompleto }}</td>
-                    <td>{{ turno.especialidad }}</td>
-                    <td>{{ turno.hora | date: 'dd/MM - HH:mm' }}</td>
-                    <td>
-                      <span class="badge rounded-pill " [ngClass]="{'text-bg-danger': turno.estado == 'cancelado', 'text-bg-secondary': turno.estado == 'pendiente', 'text-bg-primary': turno.estado == 'aceptado', 'text-bg-success': turno.estado == 'realizado', 'text-bg-warning': turno.estado == 'rechazado'}">{{ turno.estado }} </span>
-                    </td>
-                    @if(turno.estado == 'pendiente')
-                    {
+                  @if((turno.estado == 'pendiente' || turno.estado == 'cancelado') && (buscadorValue == '' || turno.especialistaNombreCompleto!.toLowerCase().includes(buscadorValue) || turno.especialidad!.toLowerCase().includes(buscadorValue)))
+                  {
+                    <tr>
+                      <td>{{ turno.pacienteNombreCompleto }}</td>
+                      <td>{{ turno.especialistaNombreCompleto }}</td>
+                      <td>{{ turno.especialidad }}</td>
+                      <td>{{ turno.hora | date: 'dd/MM - HH:mm' }}</td>
                       <td>
-                        <button
-                          type="button"
-                          class="btn btn-danger"
-                          (click)="openModalCancelar(turno)">
-                          Cancelar
-                        </button>
+                        <span class="badge rounded-pill " [ngClass]="{'text-bg-danger': turno.estado == 'cancelado', 'text-bg-secondary': turno.estado == 'pendiente'}">{{ turno.estado }} </span>
                       </td>
-                    }
-                    @else if (turno.estado == 'cancelado'){
-                      <td>
-                        <button
-                          type="button"
-                          class="btn btn-info"
-                          (click)="openModalMotivo(turno)">
-                          Motivo
-                        </button>
-                      </td>
-                    }
-                  </tr>
+                      @if(turno.estado == 'pendiente')
+                      {
+                        <td>
+                          <button
+                            type="button"
+                            class="btn btn-danger"
+                            data-bs-toggle="modal"
+                            [attr.data-bs-target]="'#modalCancelar' + turno.id"
+                            >
+                            Cancelar
+                          </button>
+                        </td>
+                      }
+                      @else if (turno.estado == 'cancelado'){
+                        <td>
+                          <button
+                            type="button"
+                            class="btn btn-info"
+                            data-bs-toggle="modal"
+                            [attr.data-bs-target]="'#modalMotivo' + turno.id"
+                            >
+                            Motivo
+                          </button>
+                        </td>
+                      }
+                    </tr>
+                  }
+                  
                 } @empty {
                 <tr>
                   <td colspan="11" class="text-center">¡No hay turnos!</td>
@@ -66,47 +75,49 @@
       </div>
     </div>
   </div>
+  @for(turno of turnos; track $index)
+  {
+    @if(turno.estado == 'pendiente')
+    {
+      <div class="modal fade" [id]="'modalCancelar' + turno.id" 
+      aria-labelledby="modalLabel" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="modalLabel">Ingrese comentario sobre el motivo de la cancelación</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+              <textarea class="form-control" id="message-text" [(ngModel)]="comentarioCancelacion"></textarea>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+              <button type="button" class="btn btn-danger" (click)="cancelarTurno(turno)" data-bs-dismiss="modal">Cancelar turno</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+    @else if(turno.estado == 'cancelado')
+    {
+      <div class="modal fade" [id]="'modalMotivo' + turno.id" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="modalLabel">Motivo de la cancelación</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+              <p>{{turno.comentario}}</p>
+              <p style="text-align: right;">- Cancelado por: {{turno.canceladoPor | titlecase}} -</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary w-100" data-bs-dismiss="modal">Ok</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  }
 </div>
-
-@if(showModalCancelar)
-{
-  <div class="modal fade show" id="myModal" style="display: block; background-color: rgba(0, 0, 0, 0.5);" aria-labelledby="cancelarTurnoLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="cancelarTurnoLabel">Ingrese comentario sobre el motivo de la cancelación</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closeModalCancelar()"></button>
-        </div>
-        <div class="modal-body">
-          <textarea class="form-control" id="message-text" [(ngModel)]="comentarioCancelacion"></textarea>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="closeModalCancelar()">Cerrar</button>
-          <button type="button" class="btn btn-danger" (click)="cancelarTurno()">Cancelar turno</button>
-        </div>
-      </div>
-    </div>
-  </div>
-}
-
-@if(showModalMotivo)
-{
-  <div class="modal fade show" id="myModalMotivo" style="display: block; background-color: rgba(0, 0, 0, 0.5);" aria-labelledby="cancelarTurnoLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="cancelarTurnoLabel">Motivo de la cancelación</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closeModalMotivo()"></button>
-        </div>
-        <div class="modal-body">
-          <p>{{turnoSeleccionado?.comentario}}</p>
-          <p style="text-align: right;">- Cancelado por: {{turnoSeleccionado?.canceladoPor | titlecase}} -</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary w-100" data-bs-dismiss="modal" (click)="closeModalMotivo()">Ok</button>
-        </div>
-      </div>
-    </div>
-  </div>
-}
 

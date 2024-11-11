@@ -3,6 +3,18 @@
     margin: 0;
 }
 
+.main-color {
+    color: #084887;
+}
+
+.main-background-color, .btn-generar {
+    background-color: #084887;
+}
+
+.btn-generar:hover{
+    background-color: #5894d5;
+}
+
 .lds-ring {
     display: flex;
     margin-top: 5px;

@@ -21,7 +21,6 @@ export class TurnosComponent implements OnDestroy {
   protected loading = false;
   protected databaseService = inject(DatabaseService);
   protected turnos: Array<Turno> = [];
-  protected turnoSeleccionado: Turno | null = null;
   protected showModalCancelar: boolean = false;
   protected showModalMotivo: boolean = false;
   protected comentarioCancelacion: string = '';
@@ -30,6 +29,7 @@ export class TurnosComponent implements OnDestroy {
   private authenticationService = inject(AuthenticationService);
 
   protected user?: User | null;
+  protected buscadorValue: string = '';
 
   ngOnInit(): void {
     const authSub = this.authenticationService.getCurrentUser().subscribe((user: User | null) => {
@@ -81,27 +81,7 @@ export class TurnosComponent implements OnDestroy {
     this.subscriptions.add(turnosSub);
   }
 
-  openModalCancelar(turno: Turno) {
-    this.turnoSeleccionado = turno; 
-    this.showModalCancelar = true;
-  }
-
-  closeModalCancelar() {
-    this.turnoSeleccionado = null;
-    this.showModalCancelar = false; 
-    this.comentarioCancelacion = '';
-  }
-
-  openModalMotivo(turno: Turno) {
-    this.turnoSeleccionado = turno;
-    this.showModalMotivo = true;
-  }
-
-  closeModalMotivo() {
-    this.showModalMotivo = false; 
-  }
-
-  async cancelarTurno() {
+  cancelarTurno(turno: Turno) {
     if (this.comentarioCancelacion.length < 10) {
       toast.warning('Su comentario debe ser de más de 10 caracteres');
       return;
@@ -112,14 +92,11 @@ export class TurnosComponent implements OnDestroy {
 
     const promise = new Promise(async (resolve, reject) => {
       try {
-        if (this.turnoSeleccionado) {
-          await this.databaseService.updateDocumentFields('turnos', this.turnoSeleccionado.id!, {
-            estado: 'cancelado',
-            comentario: this.comentarioCancelacion,
-            canceladoPor: this.user?.displayName
-          });
-          this.turnoSeleccionado = null;
-        }
+        await this.databaseService.updateDocumentFields('turnos', turno.id!, {
+          estado: 'cancelado',
+          comentario: this.comentarioCancelacion,
+          canceladoPor: this.user?.displayName
+        });
         resolve(true);
       } catch (error) {
         console.error('Error al cancelar el turno:', error);
@@ -130,14 +107,18 @@ export class TurnosComponent implements OnDestroy {
     toast.promise(promise, {
       loading: 'Cancelando turno...',
       success: () => {
-        this.closeModalCancelar();
         return 'Turno cancelado con éxito';
       },
       error: () => {
-        this.closeModalCancelar();
         return 'Hubo un problema al cancelar el turno';
-      },
+      }, 
     });
+  }
+
+  buscarPalabras(event: Event)
+  {
+    const input = event.target as HTMLInputElement;
+    this.buscadorValue = (input.value).toLowerCase();
   }
 
   ngOnDestroy(): void {

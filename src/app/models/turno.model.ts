@@ -8,5 +8,6 @@ export interface Turno {
   canceladoPor?: 'paciente' | 'administrador' | 'especialista'
   especialistaNombreCompleto?: string 
   pacienteNombreCompleto?: string 
-  comentario?: string
+  comentario?: string,
+  disabled?: boolean
 }
