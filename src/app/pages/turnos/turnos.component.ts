@@ -1,0 +1,134 @@
+import { Component, inject, OnDestroy } from '@angular/core';
+import { DatabaseService } from '../../services/database.service';
+import { Turno } from '../../models/turno.model';
+import { Especialista } from '../../models/especialista.model';
+import { Paciente } from '../../models/paciente.model';
+import { CommonModule, DatePipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { toast } from 'ngx-sonner';
+import { Subscription } from 'rxjs';
+
+@Component({
+  selector: 'app-turnos',
+  standalone: true,
+  imports: [DatePipe, FormsModule, CommonModule],
+  templateUrl: './turnos.component.html',
+  styleUrls: ['./turnos.component.css']
+})
+export class TurnosComponent implements OnDestroy {
+  protected loading = false;
+  protected databaseService = inject(DatabaseService);
+  protected turnos: Array<Turno> = [];
+  protected turnoSeleccionado: Turno | null = null;
+  protected showModalCancelar: boolean = false;
+  protected showModalMotivo: boolean = false;
+  protected comentarioCancelacion: string = '';
+
+  private subscriptions: Subscription = new Subscription();
+
+  public ngOnInit(): void {
+    this.traerTurnos();
+  }
+  
+  private traerTurnos(): void {
+    this.loading = true;
+    
+    const turnosSub = this.databaseService.getDocument('turnos').subscribe({
+      next: (turnos: any[]) => {
+        this.turnos = turnos.map((turno) => {
+          turno.hora = this.databaseService.convertTimestampToDate(turno.hora);
+          return turno;
+        });
+
+        this.turnos.forEach((turno) => {
+          const especialistaSub = this.databaseService.getDocumentById('usuarios', turno.especialistaEmail).subscribe({
+            next: (especialista: Especialista) => {
+              turno.especialistaNombreCompleto = `${especialista.nombre} ${especialista.apellido}`;
+            },
+            error: (error) => {
+              console.error(`Error al cargar especialista para el turno`, error);
+            }
+          });
+          this.subscriptions.add(especialistaSub);
+
+          const pacienteSub = this.databaseService.getDocumentById('usuarios', turno.pacienteEmail).subscribe({
+            next: (paciente: Paciente) => {
+              turno.pacienteNombreCompleto = `${paciente.nombre} ${paciente.apellido}`;
+            },
+            error: (error) => {
+              console.error(`Error al cargar paciente para el turno`, error);
+            }
+          });
+          this.subscriptions.add(pacienteSub);
+        });
+
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error al traer turnos:', error);
+        this.loading = false;
+      }
+    });
+    this.subscriptions.add(turnosSub);
+  }
+
+  openModalCancelar(turno: Turno) {
+    this.turnoSeleccionado = turno; 
+    this.showModalCancelar = true;
+  }
+
+  closeModalCancelar() {
+    this.turnoSeleccionado = null;
+    this.showModalCancelar = false; 
+    this.comentarioCancelacion = '';
+  }
+
+  openModalMotivo(turno: Turno) {
+    this.turnoSeleccionado = turno;
+    this.showModalMotivo = true;
+  }
+
+  closeModalMotivo() {
+    this.showModalMotivo = false; 
+  }
+
+  async cancelarTurno() {
+    if (this.comentarioCancelacion.length < 10) {
+      toast.warning('Su comentario debe ser de más de 10 caracteres');
+      return;
+    } else if (this.comentarioCancelacion.length > 200) {
+      toast.warning('Su comentario debe ser de menos de 200 caracteres');
+      return;
+    }
+
+    const promise = new Promise(async (resolve, reject) => {
+      try {
+        if (this.turnoSeleccionado) {
+          await this.databaseService.updateDocumentField('turnos', this.turnoSeleccionado.id!, 'estado', 'cancelado');
+          await this.databaseService.updateDocumentField('turnos', this.turnoSeleccionado.id!, 'comentario', this.comentarioCancelacion);
+          this.turnoSeleccionado = null;
+        }
+        resolve(true);
+      } catch (error) {
+        console.error('Error al cancelar el turno:', error);
+        reject();
+      }
+    });
+      
+    toast.promise(promise, {
+      loading: 'Cancelando turno...',
+      success: () => {
+        this.closeModalCancelar();
+        return 'Turno cancelado con éxito';
+      },
+      error: () => {
+        this.closeModalCancelar();
+        return 'Hubo un problema al cancelar el turno';
+      },
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe(); // Desuscribe todas las suscripciones activas
+  }
+}

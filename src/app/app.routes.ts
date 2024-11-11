@@ -65,6 +65,12 @@ export const routes: Routes = [
                 canActivate: [noAuthGuard]
             },
             {
+                path: 'turnos',
+                loadComponent: () => 
+                    import('./pages/turnos/turnos.component').then((m) => m.TurnosComponent),
+                canActivate: [noAuthAdminGuard]
+            },
+            {
                 path: 'solicitar-turno',
                 loadComponent: () => 
                     import('./pages/solicitar-turno/solicitar-turno.component').then((m) => m.SolicitarTurnoComponent),

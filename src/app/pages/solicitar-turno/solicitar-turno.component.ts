@@ -55,7 +55,6 @@ export class SolicitarTurnoComponent implements OnInit{
       this.loading = true;
       const usuarios: any = await firstValueFrom(this.databaseService.getDocument('usuarios'));
       this.pacientes = usuarios.filter((usuario: any) => usuario.perfil == 'paciente');
-      console.log(this.pacientes);
     }
     catch (error)
     {
@@ -118,7 +117,6 @@ export class SolicitarTurnoComponent implements OnInit{
   seleccionarTurno(turno: any)
   {
     this.turnoSeleccionado = turno;
-    console.log(this.turnoSeleccionado);  
   }
 
   generateAvailableDatesAndTimes() {
@@ -163,11 +161,11 @@ export class SolicitarTurnoComponent implements OnInit{
       while (currentTime < endTime) {
         if (this.user?.displayName == 'administrador')
         {
-          turnos.push({ hora: new Date(currentTime), especialistaEmail: this.especialistaSeleccionado!.email, pacienteEmail: this.pacienteSeleccionado!.email!, especialidad: this.especialidadSeleccionada});
+          turnos.push({ hora: new Date(currentTime), especialistaEmail: this.especialistaSeleccionado!.email, pacienteEmail: this.pacienteSeleccionado!.email!, especialidad: this.especialidadSeleccionada, estado: 'pendiente'});
         }
         else
         {
-          turnos.push({ hora: new Date(currentTime), especialistaEmail: this.especialistaSeleccionado!.email, pacienteEmail: this.user!.email!, especialidad: this.especialidadSeleccionada});
+          turnos.push({ hora: new Date(currentTime), especialistaEmail: this.especialistaSeleccionado!.email, pacienteEmail: this.user!.email!, especialidad: this.especialidadSeleccionada, estado: 'pendiente'});
         }
         currentTime.setMinutes(currentTime.getMinutes() + 30);
       }
@@ -180,7 +178,12 @@ export class SolicitarTurnoComponent implements OnInit{
   {
     const promise = new Promise(async (resolve, reject) => {
       try {
-        await this.databaseService.setDocument('turnos', this.turnoSeleccionado);
+        const generatedId = await this.databaseService.setDocument('turnos', this.turnoSeleccionado);
+
+        if (generatedId)
+        {
+          await this.databaseService.updateDocumentField('turnos', generatedId, 'id', generatedId);
+        }
         resolve('');
       } catch (error) {
         reject();

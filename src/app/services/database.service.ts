@@ -1,5 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { Timestamp } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -10,13 +11,18 @@ export class DatabaseService {
   
   constructor() { }
 
-  public setDocument(path: string, data: any, documentId?: string) : Promise<void>
+  public setDocument(path: string, data: any, documentId?: string) : Promise<string | void | null>
   {
     const document = documentId 
       ? this.firestore.collection(path).doc(documentId)
       : this.firestore.collection(path).doc();
 
-    return document.set({ ...data });
+    return document.set({ ...data }).then(() => {
+      if (!documentId) {
+        return document.ref.id; 
+      }
+      return null;
+    });
   }
 
   public getDocument(path: string) : Observable<any>
@@ -37,5 +43,9 @@ export class DatabaseService {
   public updateDocumentField(path: string, documentId: string, field: string, value: any): Promise<void> {
     const document = this.firestore.collection(path).doc(documentId);
     return document.update({ [field]: value });
+  }
+  
+  convertTimestampToDate(timestamp: Timestamp): Date {
+    return new Date(timestamp.seconds * 1000);
   }
 }
