@@ -1,0 +1,87 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.search__input {
+  padding: 0.4rem 1rem;
+  border: 2px solid #084887;
+  border-radius: 25px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background-color: #f9f9f9;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  outline: none;
+}
+
+.main-color {
+  color: #084887;
+}
+
+.main-background-color {
+  background-color: #084887;
+}
+
+.search__input:focus {
+  border-color: #5894d5;
+  background-color: #fff;
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.search__input::placeholder {
+  color: #aaa;
+  font-style: italic;
+}
+
+.valoracion {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: center;
+}
+
+.valoracion .estrella, .valoracion .estrellaVer {
+  background-color: initial;
+  border: 0;
+  color: var(--color-inactivo);
+  transition: 1s all;
+  font-size: 50px;
+}
+
+.valoracion .seleccionEstrella {
+  color: var(--color-hover);
+}
+
+.estrella:not(.seleccionEstrella) {
+  transform: none; 
+}
+
+.valoracion .estrella:hover {
+  cursor: pointer;
+  color: var(--color-hover);
+  transform: rotate(360deg);
+}
+
+.estrella:nth-child(1):hover ~ button,
+.estrella:nth-child(2):hover ~ button,
+.estrella:nth-child(3):hover ~ button,
+.estrella:nth-child(4):hover ~ button,
+.estrella:nth-child(5):hover ~ button {
+  color: var(--color-hover);
+  transform: rotate(360deg);
+}
+
+
+@media screen and (max-width: 767px) {
+  .valoracion .estrella:hover,
+  .estrella:nth-child(1):hover ~ button,
+  .estrella:nth-child(2):hover ~ button,
+  .estrella:nth-child(3):hover ~ button,
+  .estrella:nth-child(4):hover ~ button,
+  .estrella:nth-child(5):hover ~ button {
+    transform: none;
+    transition: color .1s ease; /* Eliminar el efecto de rotación */
+  }
+}

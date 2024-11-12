@@ -50,7 +50,8 @@ export const routes: Routes = [
             {
                 path: 'mis-turnos',
                 loadComponent: () =>
-                    import('./pages/mis-turnos/mis-turnos.component').then((m) => m.MisTurnosComponent)
+                    import('./pages/mis-turnos/mis-turnos.component').then((m) => m.MisTurnosComponent),
+                canActivate: [noAuthGuard]
             },
             {
                 path: 'mi-perfil',

@@ -1,3 +1,5 @@
+import { Encuesta } from "./encuesta.model"
+
 export interface Turno {
   id?: string
   hora: Date,
@@ -10,4 +12,6 @@ export interface Turno {
   pacienteNombreCompleto?: string 
   comentario?: string,
   disabled?: boolean
+  encuesta?: Encuesta,
+  calificacion?: number
 }

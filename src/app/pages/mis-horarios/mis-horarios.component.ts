@@ -171,7 +171,7 @@ export class MisHorariosComponent implements OnInit{
       miercoles: { inicio: '08:00', fin: '19:00' },
       jueves: { inicio: '08:00', fin: '19:00' },
       viernes: { inicio: '08:00', fin: '19:00' },
-      sabado: {inicio: '8:00', fin: '14:00'}
+      sabado: {inicio: '08:00', fin: '14:00'}
     });
   }
 }
