@@ -45,8 +45,7 @@ export class SolicitarTurnoComponent implements OnInit{
   ngOnInit(): void {
     const authSub = this.authenticationService.getCurrentUser().subscribe((user: User | null) => {
       this.user = user;
-      if (this.user?.displayName == 'administrador')
-        this.traerUsuarios();
+      this.traerUsuarios();
       this.traerEspecialidades();
       this.traerTurnos();
     });
@@ -108,8 +107,9 @@ export class SolicitarTurnoComponent implements OnInit{
     this.especialistaSeleccionado = null;
     this.turnoSeleccionado = null;
 
+    this.especialidadSeleccionada = tipoEspecialidad;
+
     this.especialistas.forEach((especialista: Especialista) => {
-      this.especialidadSeleccionada = tipoEspecialidad;
       if (especialista.especialidad.includes(tipoEspecialidad)) {
         this.especialistasEspecialidad.push(especialista);
       }
