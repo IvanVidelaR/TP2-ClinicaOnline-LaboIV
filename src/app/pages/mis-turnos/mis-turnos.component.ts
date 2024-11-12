@@ -136,6 +136,93 @@ export class MisTurnosComponent implements OnDestroy {
     });
   }
 
+  rechazarTurno(turno: Turno) {
+    if (this.comentario.length < 10) {
+      toast.warning('Su comentario debe ser de más de 10 caracteres');
+      return;
+    } else if (this.comentario.length > 200) {
+      toast.warning('Su comentario debe ser de menos de 200 caracteres');
+      return;
+    }
+
+    const promise = new Promise(async (resolve, reject) => {
+      try {
+        await this.databaseService.updateDocumentFields('turnos', turno.id!, {
+          estado: 'rechazado',
+          comentario: this.comentario,
+          canceladoPor: this.user?.displayName
+        });
+        resolve(true);
+      } catch (error) {
+        reject();
+      }
+    });
+      
+    toast.promise(promise, {
+      loading: 'Rechazando turno...',
+      success: () => {
+        return 'Turno rechazado con éxito';
+      },
+      error: () => {
+        return 'Hubo un problema al rechazar el turno';
+      }, 
+    });
+  }
+
+  finalizarTurno(turno: Turno) {
+    if (this.comentario.length < 10) {
+      toast.warning('Su comentario debe ser de más de 10 caracteres');
+      return;
+    } else if (this.comentario.length > 200) {
+      toast.warning('Su comentario debe ser de menos de 200 caracteres');
+      return;
+    }
+
+    const promise = new Promise(async (resolve, reject) => {
+      try {
+        await this.databaseService.updateDocumentFields('turnos', turno.id!, {
+          estado: 'realizado',
+          comentario: this.comentario,
+        });
+        resolve(true);
+      } catch (error) {
+        reject();
+      }
+    });
+      
+    toast.promise(promise, {
+      loading: 'Finalizando turno...',
+      success: () => {
+        return 'Turno finalizado cargado con éxito';
+      },
+      error: () => {
+        return 'Hubo un problema al finalizar el turno';
+      }, 
+    });
+  }
+
+  aceptarTurno(turno: Turno)
+  {
+    const promise = new Promise(async (resolve, reject) => {
+      try {
+        await this.databaseService.updateDocumentField('turnos', turno.id!, 'estado', 'aceptado')
+        resolve(true);
+      } catch (error) {
+        reject();
+      }
+    });
+      
+    toast.promise(promise, {
+      loading: 'Aceptando turno...',
+      success: () => {
+        return 'Turno aceptado con éxito';
+      },
+      error: () => {
+        return 'Hubo un problema al aceptar el turno';
+      }, 
+    });
+  }
+  
   completarEncuesta(turno: Turno) {
     
     if (!this.respuesta || !this.recomendacion || !this.tratamiento || !this.comentario)

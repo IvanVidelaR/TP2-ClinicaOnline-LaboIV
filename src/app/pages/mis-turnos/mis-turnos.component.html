@@ -47,20 +47,57 @@
                       <td>
                         <span class="badge rounded-pill " [ngClass]="{'text-bg-danger': turno.estado == 'cancelado', 'text-bg-secondary': turno.estado == 'pendiente', 'text-bg-primary': turno.estado == 'aceptado', 'text-bg-success': turno.estado == 'realizado', 'text-bg-warning': turno.estado == 'rechazado'}">{{ turno.estado }} </span>
                       </td>
-                      @if(turno.estado == 'pendiente')
+                      @if(turno.estado != 'realizado' && turno.estado != 'cancelado' && turno.estado != 'rechazado')
                       {
-                        <td>
-                          <button
-                            type="button"
-                            class="btn btn-danger"
-                            data-bs-toggle="modal"
-                            [attr.data-bs-target]="'#modalCompletar' + turno.id"
+                        @if(user?.displayName == 'paciente'|| (user?.displayName == 'especialista' && turno.estado == 'aceptado'))
+                        {
+                          <td>
+                            <button
+                              type="button"
+                              class="btn btn-danger"
+                              data-bs-toggle="modal"
+                              [attr.data-bs-target]="'#modalCompletar' + turno.id"
+                              style="margin-right: 5px;"
+                              >
+                              Cancelar
+                            </button>
+                            @if(user?.displayName == 'especialista')
+                            {
+                            <button
+                              type="button"
+                              class="btn btn-primary"
+                              data-bs-toggle="modal"
+                              [attr.data-bs-target]="'#modalFinalizarTurno' + turno.id"
                             >
-                            Cancelar
-                          </button>
-                        </td>
+                              Finalizar turno
+                            </button>
+                            }
+                          </td>
+                        }
+                        @else {
+                          <td>
+                            <button
+                              type="button"
+                              class="btn btn-danger"
+                              data-bs-toggle="modal"
+                              [attr.data-bs-target]="'#modalCompletar' + turno.id"
+                              style="margin-right: 5px;"
+                              >
+                              Rechazar
+                            </button>
+                            <button
+                              type="button"
+                              class="btn btn-primary"
+                              data-bs-toggle="modal"
+                              [attr.data-bs-target]="'#modalEstaSeguro' + turno.id"
+                              >
+                              Aceptar
+                            </button>
+                          </td>
+                        }
+                        
                       }
-                      @else if (turno.estado == 'cancelado'){
+                      @else if (turno.estado == 'cancelado' || turno.estado == 'rechazado'){
                         <td>
                           <button
                             type="button"
@@ -84,7 +121,7 @@
                               [attr.data-bs-target]="'#modalComentario' + turno.id"
                               style="margin-right: 5px;"
                               >
-                              Reseña
+                              Ver Reseña
                             </button>
                             @if(this.user?.displayName == 'paciente')
                             {
@@ -157,7 +194,7 @@
   </div>
   @for(turno of turnos; track $index)
   {
-    @if(turno.estado == 'pendiente')
+    @if((user?.displayName == 'paciente' && (turno.estado == 'pendiente' || turno.estado == 'aceptado')) || (user?.displayName == 'especialista' && turno.estado == 'aceptado'))
     {
       <div class="modal fade" [id]="'modalCompletar' + turno.id" 
       aria-labelledby="modalLabel" tabindex="-1" aria-hidden="true" (hidden.bs.modal)="comentario = ''">
@@ -179,13 +216,88 @@
       </div>
     }
     
-    @if(turno.estado == 'cancelado' || (turno.estado == 'realizado' && turno.comentario))
+    @if(user?.displayName == 'especialista')
+    {
+      @if(turno.estado == 'pendiente')
+      {
+        <div class="modal fade" [id]="'modalCompletar' + turno.id" 
+        aria-labelledby="modalLabel" tabindex="-1" aria-hidden="true" (hidden.bs.modal)="comentario = ''">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="modalLabel">Ingrese comentario sobre el motivo del rechazo.</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+              </div>
+              <div class="modal-body">
+                <textarea class="form-control" id="message-text" [(ngModel)]="comentario"></textarea>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-danger" (click)="rechazarTurno(turno)" data-bs-dismiss="modal">Rechazar turno</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal fade" [id]="'modalEstaSeguro' + turno.id" 
+        aria-labelledby="modalLabel" tabindex="-1" aria-hidden="true" (hidden.bs.modal)="comentario = ''">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="modalLabel">¿Seguro desea aceptar el turno?.</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No, me confundi</button>
+                <button type="button" class="btn btn-primary" (click)="aceptarTurno(turno)" data-bs-dismiss="modal">Aceptar turno</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+      @else if(turno.estado == 'aceptado')
+      {
+        <div class="modal fade" [id]="'modalFinalizarTurno' + turno.id" 
+        aria-labelledby="modalLabel" tabindex="-1" aria-hidden="true" (hidden.bs.modal)="comentario = ''">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="modalLabel">Ingrese una reseña o comentario de la consulta.</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+              </div>
+              <div class="modal-body">
+                <textarea class="form-control" id="message-text" [(ngModel)]="comentario"></textarea>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" (click)="finalizarTurno(turno)" data-bs-dismiss="modal">Finalizar turno</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    }
+
+    @if(turno.estado == 'cancelado' || turno.estado == 'rechazado' || (turno.estado == 'realizado' && turno.comentario))
     {
       <div class="modal fade" [id]="'modalComentario' + turno.id" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">
             <div class="modal-header">
-              <h1 class="modal-title fs-5" id="modalLabel">{{turno.estado == 'cancelado' ? 'Motivo de la cancelación': 'Reseña'}}</h1>
+              <h1 class="modal-title fs-5" id="modalLabel">
+                @if(turno.estado == 'cancelado')
+                {
+                  Motivo de la cancelación
+                }
+                @else if(turno.estado == 'rechazado')
+                {
+                  Motivo del rechazo
+                }
+                @else
+                {
+                  Reseña
+                }
+              </h1>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
@@ -194,9 +306,13 @@
               {
                 <p style="text-align: right;">- Cancelado por: {{turno.canceladoPor | titlecase}} -</p>
               }
+              @else if(turno.estado == 'rechazado')
+              {
+                <p style="text-align: right;">- Rechazado por: {{turno.canceladoPor | titlecase}} -</p>
+              }
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn w-100" [ngClass]="{'btn-info': turno.estado == 'cancelado', 'btn-secondary': turno.estado == 'realizado'}" data-bs-dismiss="modal">Ok</button>
+              <button type="button" class="btn w-100" [ngClass]="{'btn-info': turno.estado == 'cancelado' || turno.estado == 'rechazado', 'btn-secondary': turno.estado == 'realizado'}" data-bs-dismiss="modal">Ok</button>
             </div>
           </div>
         </div>

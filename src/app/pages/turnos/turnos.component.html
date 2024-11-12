@@ -25,7 +25,7 @@
                     <td colspan="11" class="text-center">Cargando turnos...</td>
                   </tr>
                 } @else { @for (turno of turnos; track $index) {
-                  @if((turno.estado == 'pendiente' || turno.estado == 'cancelado') && (buscadorValue == '' || turno.especialistaNombreCompleto!.toLowerCase().includes(buscadorValue) || turno.especialidad!.toLowerCase().includes(buscadorValue)))
+                  @if((buscadorValue == '' || turno.especialistaNombreCompleto!.toLowerCase().includes(buscadorValue) || turno.especialidad!.toLowerCase().includes(buscadorValue)))
                   {
                     <tr>
                       <td>{{ turno.pacienteNombreCompleto }}</td>
@@ -33,7 +33,7 @@
                       <td>{{ turno.especialidad }}</td>
                       <td>{{ turno.hora | date: 'dd/MM - HH:mm' }}</td>
                       <td>
-                        <span class="badge rounded-pill " [ngClass]="{'text-bg-danger': turno.estado == 'cancelado', 'text-bg-secondary': turno.estado == 'pendiente'}">{{ turno.estado }} </span>
+                        <span class="badge rounded-pill " [ngClass]="{'text-bg-danger': turno.estado == 'cancelado', 'text-bg-secondary': turno.estado == 'pendiente', 'text-bg-primary': turno.estado == 'aceptado', 'text-bg-success': turno.estado == 'realizado', 'text-bg-warning': turno.estado == 'rechazado'}">{{ turno.estado }} </span>
                       </td>
                       @if(turno.estado == 'pendiente')
                       {
@@ -58,6 +58,11 @@
                             >
                             Motivo
                           </button>
+                        </td>
+                      }
+                      @else {
+                        <td>
+                          
                         </td>
                       }
                     </tr>
