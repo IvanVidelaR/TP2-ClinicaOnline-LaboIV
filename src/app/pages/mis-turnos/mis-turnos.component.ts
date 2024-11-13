@@ -318,12 +318,6 @@ export class MisTurnosComponent implements OnDestroy {
     })
   }
 
-  buscarPalabras(event: Event)
-  {
-    const input = event.target as HTMLInputElement;
-    this.buscadorValue = (input.value).toLowerCase();
-  }
-
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe(); 
   }
