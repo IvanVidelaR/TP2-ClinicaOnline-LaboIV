@@ -225,7 +225,7 @@ export class MisTurnosComponent implements OnDestroy {
   
   completarEncuesta(turno: Turno) {
     
-    if (!this.respuesta || !this.recomendacion || !this.tratamiento || !this.comentario)
+    if (this.respuesta == null || this.recomendacion == null || this.tratamiento == null || !this.comentario)
     {
       toast.warning('Debe completar todos los campos para mandar la encuesta');
       return;
