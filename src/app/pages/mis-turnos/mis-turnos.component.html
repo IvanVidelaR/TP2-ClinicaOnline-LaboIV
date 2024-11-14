@@ -403,7 +403,7 @@
         }
         @else {
           <div class="modal fade" [id]="'modalCompletarEncuesta' + turno.id" 
-          aria-labelledby="modalLabel" tabindex="-1" aria-hidden="true" (hidden.bs.modal)="comentario = ''; tratamiento = null; respuesta = null; recomendacion = null;">
+          aria-labelledby="modalLabel" tabindex="-1" aria-hidden="true" (hidden.bs.modal)="resetEncuesta()">
             <div class="modal-dialog modal-dialog-centered">
               <div class="modal-content">
                 <div class="modal-header">

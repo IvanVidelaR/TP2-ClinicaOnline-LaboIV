@@ -239,36 +239,40 @@ export class MisTurnosComponent implements OnDestroy {
       return;
     } 
     
-    if (this.respuesta && this.tratamiento && this.recomendacion && this.comentario)
-    {
-      const encuesta: Encuesta = {
-        respuesta: this.respuesta,
-        tratamiento: this.tratamiento,
-        recomendacion: this.recomendacion,
-        comentario: this.comentario,
-      };
+    const encuesta: Encuesta = {
+      respuesta: this.respuesta,
+      tratamiento: this.tratamiento,
+      recomendacion: this.recomendacion,
+      comentario: this.comentario,
+    };
 
-      const promise = new Promise(async (resolve, reject) => {
-        try {
-          await this.databaseService.updateDocumentField('turnos', turno.id!, 'encuesta', encuesta)
-          resolve(true);
-        } catch (error) {
-          reject();
-        }
-      });
-        
-      toast.promise(promise, {
-        loading: 'Completando encuesta...',
-        success: () => {
-          return 'Encuesta completada con éxito. ¡Que tenga un buen día!';
-        },
-        error: () => {
-          return 'Hubo un problema al completar la encuesta';
-        }, 
-      });
-    }
+    const promise = new Promise(async (resolve, reject) => {
+      try {
+        await this.databaseService.updateDocumentField('turnos', turno.id!, 'encuesta', encuesta)
+        resolve(true);
+      } catch (error) {
+        reject();
+      }
+    });
+      
+    toast.promise(promise, {
+      loading: 'Completando encuesta...',
+      success: () => {
+        return 'Encuesta completada con éxito. ¡Que tenga un buen día!';
+      },
+      error: () => {
+        return 'Hubo un problema al completar la encuesta';
+      }, 
+    });
   }
 
+  resetEncuesta() {
+    this.comentario = '';
+    this.respuesta = null;
+    this.tratamiento = null;
+    this.recomendacion = null;
+  }
+  
   completarCalificacion(turno: Turno) {
     if (!this.estrellaSeleccionada)
     {
