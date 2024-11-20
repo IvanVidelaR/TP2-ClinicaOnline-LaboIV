@@ -6,7 +6,7 @@
           <h2 class="mb-0 text-center">Tabla de turnos:</h2>
         </div>
         <div class="card-body">
-          <input id="buscador" [(ngModel)]="buscadorValue" type="text" class="search__input w-100" placeholder="Buscar ...">
+          <input id="buscador" [(ngModel)]="buscadorValue" (keyup)="filtrarTurnos()" type="text" class="search__input w-100" placeholder="Buscar ...">
           <div class="table-responsive"> 
             <table class="table table-striped table-hover">
               <thead >
@@ -30,9 +30,7 @@
                   <tr>
                     <td colspan="11" class="text-center">Cargando turnos...</td>
                   </tr>
-                } @else { @for (turno of turnos; track $index) {
-                  @if(buscadorValue == '' || (user?.displayName == 'paciente' && turno.especialistaNombreCompleto!.toLowerCase().includes(buscadorValue)) || turno.especialidad!.toLowerCase().includes(buscadorValue) || (user?.displayName == 'especialista' && turno.pacienteNombreCompleto!.toLowerCase().includes(buscadorValue))) 
-                  {
+                } @else { @for (turno of turnosFiltrados; track $index) {
                     <tr>
                       @if(this.user?.displayName == 'paciente')
                       {
@@ -178,8 +176,6 @@
                         <td>No tiene</td>
                       }
                     </tr>
-                  }
-                  
                 } @empty {
                 <tr>
                   <td colspan="11" class="text-center">¡No hay turnos!</td>
@@ -192,7 +188,7 @@
       </div>
     </div>
   </div>
-  @for(turno of turnos; track $index)
+  @for(turno of turnosFiltrados; track $index)
   {
     @if((user?.displayName == 'paciente' && (turno.estado == 'pendiente' || turno.estado == 'aceptado')) || (user?.displayName == 'especialista' && turno.estado == 'aceptado'))
     {

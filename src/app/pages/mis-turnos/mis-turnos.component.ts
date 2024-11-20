@@ -16,12 +16,13 @@ import { Encuesta } from '../../models/encuesta.model';
   standalone: true,
   imports: [DatePipe, FormsModule, CommonModule],
   templateUrl: './mis-turnos.component.html',
-  styleUrls: ['./mis-turnos.component.css']
+  styleUrls: ['./mis-turnos.component.css'],
 })
 export class MisTurnosComponent implements OnDestroy {
   protected loading = false;
   protected databaseService = inject(DatabaseService);
   protected turnos: Array<Turno> = [];
+  protected turnosFiltrados: Array<Turno> = [];
   protected showModalCancelar: boolean = false;
   protected showModalMotivo: boolean = false;
 
@@ -36,20 +37,28 @@ export class MisTurnosComponent implements OnDestroy {
   protected user?: User | null;
   protected buscadorValue: string = '';
 
-  protected estrellas = [{ valor: 5, enabled: false }, { valor: 4, enabled: false }, { valor: 3, enabled: false }, { valor: 2, enabled: false }, { valor: 1, enabled: false }];
+  protected estrellas = [
+    { valor: 5, enabled: false },
+    { valor: 4, enabled: false },
+    { valor: 3, enabled: false },
+    { valor: 2, enabled: false },
+    { valor: 1, enabled: false },
+  ];
   protected estrellaSeleccionada: any = null;
 
   ngOnInit(): void {
-    const authSub = this.authenticationService.getCurrentUser().subscribe((user: User | null) => {
-      this.user = user;
-      this.traerTurnos();
-    });
+    const authSub = this.authenticationService
+      .getCurrentUser()
+      .subscribe((user: User | null) => {
+        this.user = user;
+        this.traerTurnos();
+      });
     this.subscriptions.add(authSub);
   }
 
   private traerTurnos(): void {
     this.loading = true;
-    
+
     const turnosSub = this.databaseService.getDocument('turnos').subscribe({
       next: (turnos: any[]) => {
         this.turnos = turnos.map((turno) => {
@@ -57,48 +66,57 @@ export class MisTurnosComponent implements OnDestroy {
           return turno;
         });
 
-        if (this.user?.displayName == 'paciente')
-        {
-          this.turnos = this.turnos.filter((turno: Turno) => turno.pacienteEmail == this.user?.email)
+        if (this.user?.displayName == 'paciente') {
+          this.turnos = this.turnos.filter(
+            (turno: Turno) => turno.pacienteEmail == this.user?.email
+          );
+        } else if (this.user?.displayName == 'especialista') {
+          this.turnos = this.turnos.filter(
+            (turno: Turno) => turno.especialistaEmail == this.user?.email
+          );
         }
-        else if(this.user?.displayName == 'especialista')
-        {
-          this.turnos = this.turnos.filter((turno: Turno) => turno.especialistaEmail == this.user?.email)
-        }
-        
+
         this.turnos.forEach((turno) => {
-          if (this.user?.displayName == 'paciente')
-          {
-            const especialistaSub = this.databaseService.getDocumentById('usuarios', turno.especialistaEmail).subscribe({
-              next: (especialista: Especialista) => {
-                turno.especialistaNombreCompleto = `${especialista.nombre} ${especialista.apellido}`;
-              },
-              error: (error) => {
-                console.error(`Error al cargar especialista para el turno`, error);
-              }
-            });
+          if (this.user?.displayName == 'paciente') {
+            const especialistaSub = this.databaseService
+              .getDocumentById('usuarios', turno.especialistaEmail)
+              .subscribe({
+                next: (especialista: Especialista) => {
+                  turno.especialistaNombreCompleto = `${especialista.nombre} ${especialista.apellido}`;
+                },
+                error: (error) => {
+                  console.error(
+                    `Error al cargar especialista para el turno`,
+                    error
+                  );
+                },
+              });
             this.subscriptions.add(especialistaSub);
-          }
-          else if (this.user?.displayName == 'especialista')
-          {
-            const pacienteSub = this.databaseService.getDocumentById('usuarios', turno.pacienteEmail).subscribe({
-              next: (paciente: Paciente) => {
-                turno.pacienteNombreCompleto = `${paciente.nombre} ${paciente.apellido}`;
-              },
-              error: (error) => {
-                console.error(`Error al cargar paciente para el turno`, error);
-              }
-            });
+          } else if (this.user?.displayName == 'especialista') {
+            const pacienteSub = this.databaseService
+              .getDocumentById('usuarios', turno.pacienteEmail)
+              .subscribe({
+                next: (paciente: Paciente) => {
+                  turno.pacienteNombreCompleto = `${paciente.nombre} ${paciente.apellido}`;
+                },
+                error: (error) => {
+                  console.error(
+                    `Error al cargar paciente para el turno`,
+                    error
+                  );
+                },
+              });
             this.subscriptions.add(pacienteSub);
           }
         });
 
+        this.filtrarTurnos();
         this.loading = false;
       },
       error: (error) => {
         console.error('Error al traer turnos:', error);
         this.loading = false;
-      }
+      },
     });
     this.subscriptions.add(turnosSub);
   }
@@ -117,14 +135,14 @@ export class MisTurnosComponent implements OnDestroy {
         await this.databaseService.updateDocumentFields('turnos', turno.id!, {
           estado: 'cancelado',
           comentario: this.comentario,
-          canceladoPor: this.user?.displayName
+          canceladoPor: this.user?.displayName,
         });
         resolve(true);
       } catch (error) {
         reject();
       }
     });
-      
+
     toast.promise(promise, {
       loading: 'Cancelando turno...',
       success: () => {
@@ -132,7 +150,7 @@ export class MisTurnosComponent implements OnDestroy {
       },
       error: () => {
         return 'Hubo un problema al cancelar el turno';
-      }, 
+      },
     });
   }
 
@@ -150,14 +168,14 @@ export class MisTurnosComponent implements OnDestroy {
         await this.databaseService.updateDocumentFields('turnos', turno.id!, {
           estado: 'rechazado',
           comentario: this.comentario,
-          canceladoPor: this.user?.displayName
+          canceladoPor: this.user?.displayName,
         });
         resolve(true);
       } catch (error) {
         reject();
       }
     });
-      
+
     toast.promise(promise, {
       loading: 'Rechazando turno...',
       success: () => {
@@ -165,7 +183,7 @@ export class MisTurnosComponent implements OnDestroy {
       },
       error: () => {
         return 'Hubo un problema al rechazar el turno';
-      }, 
+      },
     });
   }
 
@@ -176,17 +194,23 @@ export class MisTurnosComponent implements OnDestroy {
     presion: '',
     datosDinamicos: [] as { clave: string; valor: string }[],
   };
-  
+
   errores: any = {};
   formularioValido = false;
 
   resetFormulario() {
-    this.historiaClinica = { altura: '', peso: '', temperatura: '', presion: '', datosDinamicos: [] };
+    this.historiaClinica = {
+      altura: '',
+      peso: '',
+      temperatura: '',
+      presion: '',
+      datosDinamicos: [],
+    };
     this.comentario = '';
     this.errores = {};
     this.formularioValido = false;
   }
-  
+
   validarAltura() {
     const altura = +this.historiaClinica.altura;
     if (!altura) {
@@ -198,7 +222,7 @@ export class MisTurnosComponent implements OnDestroy {
     }
     this.validarFormulario();
   }
-  
+
   validarPeso() {
     const peso = +this.historiaClinica.peso;
     if (!peso) {
@@ -210,7 +234,7 @@ export class MisTurnosComponent implements OnDestroy {
     }
     this.validarFormulario();
   }
-  
+
   validarTemperatura() {
     const temperatura = +this.historiaClinica.temperatura;
     if (!temperatura) {
@@ -222,7 +246,7 @@ export class MisTurnosComponent implements OnDestroy {
     }
     this.validarFormulario();
   }
-  
+
   validarPresion() {
     const presion = +this.historiaClinica.presion;
     if (!presion) {
@@ -234,18 +258,19 @@ export class MisTurnosComponent implements OnDestroy {
     }
     this.validarFormulario();
   }
-  
+
   validarComentario() {
     if (!this.comentario) {
       this.errores.comentario = 'El comentario es obligatorio.';
     } else if (this.comentario.length < 10 || this.comentario.length > 200) {
-      this.errores.comentario = 'El comentario debe tener entre 10 y 200 caracteres.';
+      this.errores.comentario =
+        'El comentario debe tener entre 10 y 200 caracteres.';
     } else {
       delete this.errores.comentario;
     }
     this.validarFormulario();
   }
-  
+
   validarFormulario() {
     this.formularioValido = Object.keys(this.errores).length === 0;
   }
@@ -253,18 +278,24 @@ export class MisTurnosComponent implements OnDestroy {
   agregarDatoDinamico() {
     this.historiaClinica.datosDinamicos.push({ clave: '', valor: '' });
   }
-  
+
   eliminarDatoDinamico(index: number) {
     this.historiaClinica.datosDinamicos.splice(index, 1);
   }
-  
-  finalizarTurno(turno: Turno) {
 
-    if (!this.formularioValido || this.historiaClinica.altura == '' || this.historiaClinica.peso == '' || this.historiaClinica.presion == '' || this.historiaClinica.temperatura == '' || this.comentario == '') {
+  finalizarTurno(turno: Turno) {
+    if (
+      !this.formularioValido ||
+      this.historiaClinica.altura == '' ||
+      this.historiaClinica.peso == '' ||
+      this.historiaClinica.presion == '' ||
+      this.historiaClinica.temperatura == '' ||
+      this.comentario == ''
+    ) {
       toast.warning('Debe completar todos los campos para finalizar el turno');
       return;
     }
-  
+
     const promise = new Promise(async (resolve, reject) => {
       try {
         await this.databaseService.updateDocumentFields('turnos', turno.id!, {
@@ -277,7 +308,7 @@ export class MisTurnosComponent implements OnDestroy {
         reject(error);
       }
     });
-  
+
     toast.promise(promise, {
       loading: 'Finalizando turno...',
       success: 'Turno finalizado y cargado con éxito.',
@@ -285,17 +316,21 @@ export class MisTurnosComponent implements OnDestroy {
     });
   }
 
-  aceptarTurno(turno: Turno)
-  {
+  aceptarTurno(turno: Turno) {
     const promise = new Promise(async (resolve, reject) => {
       try {
-        await this.databaseService.updateDocumentField('turnos', turno.id!, 'estado', 'aceptado')
+        await this.databaseService.updateDocumentField(
+          'turnos',
+          turno.id!,
+          'estado',
+          'aceptado'
+        );
         resolve(true);
       } catch (error) {
         reject();
       }
     });
-      
+
     toast.promise(promise, {
       loading: 'Aceptando turno...',
       success: () => {
@@ -303,26 +338,31 @@ export class MisTurnosComponent implements OnDestroy {
       },
       error: () => {
         return 'Hubo un problema al aceptar el turno';
-      }, 
+      },
     });
   }
-  
+
   completarEncuesta(turno: Turno) {
-    
-    if (this.respuesta == null || this.recomendacion == null || this.tratamiento == null || !this.comentario)
-    {
+    if (
+      this.respuesta == null ||
+      this.recomendacion == null ||
+      this.tratamiento == null ||
+      !this.comentario
+    ) {
       toast.warning('Debe completar todos los campos para mandar la encuesta');
       return;
-    }
-    else if (this.comentario.length < 10) {
-      toast.warning('Su comentario en la encuesta debe ser de más de 10 caracteres');
+    } else if (this.comentario.length < 10) {
+      toast.warning(
+        'Su comentario en la encuesta debe ser de más de 10 caracteres'
+      );
+      return;
+    } else if (this.comentario.length > 200) {
+      toast.warning(
+        'Su comentario en la encuesta debe ser de menos de 200 caracteres'
+      );
       return;
     }
-    else if (this.comentario.length > 200) {
-      toast.warning('Su comentario en la encuesta debe ser de menos de 200 caracteres');
-      return;
-    } 
-    
+
     const encuesta: Encuesta = {
       respuesta: this.respuesta,
       tratamiento: this.tratamiento,
@@ -332,13 +372,18 @@ export class MisTurnosComponent implements OnDestroy {
 
     const promise = new Promise(async (resolve, reject) => {
       try {
-        await this.databaseService.updateDocumentField('turnos', turno.id!, 'encuesta', encuesta)
+        await this.databaseService.updateDocumentField(
+          'turnos',
+          turno.id!,
+          'encuesta',
+          encuesta
+        );
         resolve(true);
       } catch (error) {
         reject();
       }
     });
-      
+
     toast.promise(promise, {
       loading: 'Completando encuesta...',
       success: () => {
@@ -346,7 +391,7 @@ export class MisTurnosComponent implements OnDestroy {
       },
       error: () => {
         return 'Hubo un problema al completar la encuesta';
-      }, 
+      },
     });
   }
 
@@ -356,25 +401,28 @@ export class MisTurnosComponent implements OnDestroy {
     this.tratamiento = null;
     this.recomendacion = null;
   }
-  
+
   completarCalificacion(turno: Turno) {
-    if (!this.estrellaSeleccionada)
-    {
+    if (!this.estrellaSeleccionada) {
       toast.warning('Coloque al menos una estrella :(');
       return;
     }
-    
-    if (this.estrellaSeleccionada)
-    {
+
+    if (this.estrellaSeleccionada) {
       const promise = new Promise(async (resolve, reject) => {
         try {
-          await this.databaseService.updateDocumentField('turnos', turno.id!, 'calificacion', this.estrellaSeleccionada.valor)
+          await this.databaseService.updateDocumentField(
+            'turnos',
+            turno.id!,
+            'calificacion',
+            this.estrellaSeleccionada.valor
+          );
           resolve(true);
         } catch (error) {
           reject();
         }
       });
-        
+
       toast.promise(promise, {
         loading: 'Asignando calificación...',
         success: () => {
@@ -382,31 +430,71 @@ export class MisTurnosComponent implements OnDestroy {
         },
         error: () => {
           return 'Hubo un problema al asignar calificación';
-        }, 
+        },
       });
     }
   }
 
-  deseleccionarEstrellas()
-  {
-    this.estrellas.map(estrella => estrella.enabled = false);
+  deseleccionarEstrellas() {
+    this.estrellas.map((estrella) => (estrella.enabled = false));
   }
 
-  seleccionarEstrella(estrellaSeleccionada: any)
-  {
+  seleccionarEstrella(estrellaSeleccionada: any) {
     this.estrellaSeleccionada = estrellaSeleccionada;
 
-    this.deseleccionarEstrellas()
+    this.deseleccionarEstrellas();
 
-    this.estrellas.map(estrella => {
-      if (estrella.valor <= estrellaSeleccionada.valor)
-      {
-        estrella.enabled = true
+    this.estrellas.map((estrella) => {
+      if (estrella.valor <= estrellaSeleccionada.valor) {
+        estrella.enabled = true;
       }
-    })
+    });
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.unsubscribe(); 
+    this.subscriptions.unsubscribe();
   }
+
+  filtrarTurnos() {
+    if (this.buscadorValue === '') {
+      this.turnosFiltrados = this.turnos;
+    } else {
+      const buscadorValue = isNaN(+this.buscadorValue)
+        ? this.buscadorValue.toLowerCase() 
+        : this.buscadorValue;
+  
+      this.turnosFiltrados = this.turnos.filter((turno) => {
+        return (
+          (this.user?.displayName === 'paciente' &&
+            turno.especialistaNombreCompleto
+              ?.toLowerCase()
+              .includes(buscadorValue)) ||
+          turno.especialistaNombreCompleto
+            ?.toLowerCase()
+            .includes(buscadorValue) ||
+          turno.especialidad?.toLowerCase().includes(buscadorValue) ||
+          (this.user?.displayName === 'especialista' &&
+            turno.pacienteNombreCompleto
+              ?.toLowerCase()
+              .includes(buscadorValue)) ||
+          (turno.historiaClinica &&
+            String(turno.historiaClinica.altura).includes(buscadorValue)) ||
+          (turno.historiaClinica &&
+            String(turno.historiaClinica.peso).includes(buscadorValue)) || 
+          (turno.historiaClinica &&
+            String(turno.historiaClinica.temperatura).includes(buscadorValue)) || 
+          (turno.historiaClinica &&
+            String(turno.historiaClinica.presion).includes(buscadorValue)) ||
+          (turno.historiaClinica &&
+            turno.historiaClinica.datosDinamicos &&
+            turno.historiaClinica.datosDinamicos.some((dato: any) =>
+              (dato.clave?.toLowerCase().includes(buscadorValue))
+            )
+          )
+        );
+      });
+    }
+  }
+  
+  
 }
