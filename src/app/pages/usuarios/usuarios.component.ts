@@ -5,6 +5,7 @@ import { Usuario } from '../../models/usuario.model';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { HistorialClinicoComponent } from "../historial-clinico/historial-clinico.component";
+import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-usuarios',
@@ -59,8 +60,29 @@ export class UsuariosComponent implements OnInit {
     {
       this.usuarioLoading[usuario.email] = false;
     }
-    
   }
 
+  descargarExcelDatosUsuarios() {
+    const datos = this.usuarios.map((usuario: Usuario) => ({
+      Perfil: usuario.perfil,
+      Nombre: usuario.nombre,
+      Apellido: usuario.apellido,
+      Edad: usuario.edad,
+      DNI: usuario.dni,
+      Mail: usuario.email,
+      'Imagen de Perfil': usuario.imagenDePerfil,
+      'Obra Social': usuario.obraSocial || 'NO TIENE',
+      'Imagen de Portada': usuario.segundaImagenDePerfil || 'NO TIENE',
+      Especialidades: usuario.especialidad ? usuario.especialidad.join(', ') : 'TIENE',
+      Habilitado: usuario.habilitado !== undefined ? (usuario.habilitado ? 'Sí' : 'No') : 'NO TIENE',
+    }));
+
+    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datos);
+
+    const workbook: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Datos de los usuarios');
+
+    XLSX.writeFile(workbook, 'datosUsuarios.xlsx');
+  }
 
 }
