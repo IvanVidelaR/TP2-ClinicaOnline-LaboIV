@@ -17,10 +17,7 @@
                   <th scope="col" class="main-color">DNI</th>
                   <th scope="col" class="main-color">Mail</th>
                   <th scope="col" class="main-color">Imagen</th>
-                  <th scope="col" class="main-color">Especialidades</th>
-                  <th scope="col" class="main-color">Obra Soc.</th>
-                  <th scope="col" class="main-color">Imagen 2</th>
-                  <th scope="col" class="main-color">Acciones</th>
+
                 </tr>
               </thead>
               <tbody>
@@ -29,7 +26,7 @@
                   <td colspan="11" class="text-center">Cargando usuarios...</td>
                 </tr>
                 } @else { @for (usuario of usuarios; track $index) {
-                <tr>
+                <tr data-bs-toggle="modal" [attr.data-bs-target]="'#modal' + usuario.email" style="cursor: pointer;">
                   <td>{{ usuario.perfil }}</td>
                   <td>{{ usuario.nombre }}</td>
                   <td>{{ usuario.apellido }}</td>
@@ -44,52 +41,6 @@
                       class="img-fluid"
                     />
                   </td>
-                  @if(usuario.perfil == 'especialista') {
-                  <td>{{ usuario.especialidad }}</td>
-                  } @else {
-                  <td>NO TIENE</td>
-                  } @if(usuario.perfil == 'paciente') {
-                  <td>{{ usuario.obraSocial }}</td>
-                  <td>
-                    <img
-                      src="{{ usuario.segundaImagenDePerfil }}"
-                      alt="Segunda imagen de perfil"
-                      style="max-width: 50px; max-height: 50px"
-                      class="img-fluid"
-                    />
-                  </td>
-                  } @else {
-                  <td>NO TIENE</td>
-                  <td>NO TIENE</td>
-                  } 
-                  @if(usuario.perfil == 'especialista') {
-                    @if(!usuarioLoading[usuario.email])
-                    {
-                      <td>
-                        <button
-                          type="button"
-                          [ngClass]="
-                            usuario.habilitado
-                              ? 'btn btn-danger'
-                              : 'btn btn-success'
-                          "
-                          (click)="cambiarHabilitadoEspecialista(usuario, $index)"
-                        >
-                          {{ usuario.habilitado ? "Deshabilitar" : " Habilitar" }}
-                        </button>
-                      </td>
-                    }
-                    @else {
-                      <td>
-                        <div class="lds-ring"><div></div><div></div><div></div><div></div></div>                          
-                      </td>
-                    }
-                  }
-                  @else {
-                    <td>
-                      SIN ACCIÓN
-                    </td>
-                  }
                 </tr>
                 } @empty {
                 <tr>
@@ -104,4 +55,68 @@
       <button routerLink="/sign-up/eleccion-perfil" type="button" class="btn btn-primary btn-generar mt-2 w-100 text-white">Generar nuevo usuario</button>
     </div>
   </div>
+  @for (usuario of usuarios; track $index)
+{
+  <div class="modal fade" [id]="'modal' + usuario.email" 
+    aria-labelledby="modalLabel" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow rounded">
+        <div class="modal-header bg-primary text-white rounded-top">
+          <h1 class="modal-title fs-5" id="modalLabel">Detalles de {{usuario.nombre}} {{usuario.apellido}}</h1>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <div class="card">
+            <div class="card-header text-center bg-light">
+              <img [src]="usuario.imagenDePerfil" class="rounded-circle img-thumbnail mx-auto" alt="Imagen de perfil de {{usuario.nombre}}" style="width: 100px; height: 100px; object-fit: cover;" />
+              @if(usuario.perfil == 'paciente')
+              {
+                <img [src]="usuario.segundaImagenDePerfil" class="rounded-circle img-thumbnail" alt="Segunda imagen de perfil de {{usuario.nombre}}" style="width: 65px; height: 65px; object-fit: cover; margin-left: 5px;" />
+              }
+            </div>
+            <div class="card-body">
+              <p><strong>Perfil:</strong> {{usuario.perfil}}</p>
+              <p><strong>Nombre:</strong> {{usuario.nombre}}</p>
+              <p><strong>Apellido:</strong> {{usuario.apellido}}</p>
+              <p><strong>Edad:</strong> {{usuario.edad}}</p>
+              <p><strong>DNI:</strong> {{usuario.dni}}</p>
+              <p><strong>Email:</strong> {{usuario.email}}</p>
+              @if(usuario.perfil == 'especialista')
+              {
+                <p><strong>Especialidades:</strong> {{usuario.especialidad}}</p>
+                @if(!usuarioLoading[usuario.email])
+                  {
+
+                      <button
+                        type="button"
+                        class="w-100"
+                        [ngClass]="
+                          usuario.habilitado
+                            ? 'btn btn-danger'
+                            : 'btn btn-success'
+                        "
+                        (click)="cambiarHabilitadoEspecialista(usuario, $index)">
+                        {{ usuario.habilitado ? "Deshabilitar" : " Habilitar" }}
+                      </button>
+
+                  }
+                  @else {
+                      <div class="lds-ring"><div></div><div></div><div></div><div></div></div>                          
+                  }
+              }
+              @else if(usuario.perfil == 'paciente')
+              {
+                <p><strong>Obra social:</strong> {{usuario.obraSocial}}</p>
+              }
+            </div>
+          </div>
+        </div>
+        <!-- <div class="modal-footer bg-light rounded-bottom">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        </div> -->
+      </div>
+    </div>
+  </div>
+}
+
 </div>

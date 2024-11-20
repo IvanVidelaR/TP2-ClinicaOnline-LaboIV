@@ -17,7 +17,7 @@
 
 .lds-ring {
     display: flex;
-    margin-top: 5px;
+    margin-bottom: 38px;
     justify-content: center;
 }
 
@@ -50,3 +50,28 @@
     }
 }
 
+.modal-content {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.modal-header {
+    border-bottom: none;
+}
+
+.card {
+    border: none;
+}
+
+.card-header {
+    padding: 20px;
+}
+
+.card-body {
+    padding: 20px;
+    background-color: #f8f9fa;
+}
+
+.modal-footer {
+    border-top: none;
+}
