@@ -6,19 +6,21 @@ import { User } from '@angular/fire/auth';
 import { Usuario } from '../../models/usuario.model';
 import { firstValueFrom } from 'rxjs';
 import { RouterLink } from '@angular/router';
+import { HistorialClinicoComponent } from "../historial-clinico/historial-clinico.component";
 @Component({
   selector: 'app-mi-perfil',
   standalone: true,
-  imports: [LoaderComponent, RouterLink],
+  imports: [LoaderComponent, RouterLink, HistorialClinicoComponent],
   templateUrl: './mi-perfil.component.html',
   styleUrl: './mi-perfil.component.css'
 })
 export class MiPerfilComponent implements OnInit{
   private databaseService = inject(DatabaseService);
   private authenticationService = inject(AuthenticationService);
-  private user?: User | null;
+  protected user?: User | null;
   protected loading: boolean = false; 
   protected usuario?: Usuario;
+  protected historialClinico: boolean = false;
 
   ngOnInit(): void {
     this.authenticationService.getCurrentUser().subscribe((user: User | null) => {

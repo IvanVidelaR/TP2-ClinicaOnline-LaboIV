@@ -1,0 +1,60 @@
+.historial-clinico-container {
+  max-width: 800px;
+  margin: auto;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.text-center {
+  text-align: center;
+}
+
+.card {
+  border: 1px solid #dee2e6;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  background-color: #6c757d;
+  color: white;
+  font-weight: bold;
+  padding: 10px 15px;
+}
+
+.card-body {
+  padding: 15px;
+}
+
+.historia-clinica h6 {
+  margin-top: 10px;
+  color: #495057;
+  font-weight: bold;
+}
+
+.historia-clinica ul {
+  list-style: none;
+  padding: 0;
+}
+
+.historia-clinica ul li {
+  margin-bottom: 5px;
+}
+
+.comentario {
+  margin-top: 10px;
+  font-style: italic;
+  color: #6c757d;
+}
+
+.text-muted {
+  color: #6c757d;
+}
+
+.btn {
+  width: 100%;
+  margin-bottom: 20px;
+}

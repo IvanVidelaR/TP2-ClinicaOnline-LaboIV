@@ -13,5 +13,6 @@ export interface Turno {
   comentario?: string,
   disabled?: boolean
   encuesta?: Encuesta,
-  calificacion?: number
+  calificacion?: number,
+  historiaClinica?: any;
 }

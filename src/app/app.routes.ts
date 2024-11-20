@@ -78,6 +78,12 @@ export const routes: Routes = [
                 canActivate: [noAuthGuard]
             },
             {
+                path: 'mis-pacientes',
+                loadComponent: () => 
+                    import('./pages/mis-pacientes/mis-pacientes.component').then((m) => m.MisPacientesComponent),
+                canActivate: [noAuthGuard]
+            },
+            {
                 path: 'error',
                 loadComponent: () => 
                     import('./pages/error/error.component').then((m) => m.ErrorComponent)

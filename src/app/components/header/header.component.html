@@ -30,8 +30,15 @@
                         <a class="nav-link all-nav-link" routerLink="/solicitar-turno" routerLinkActive="active">Solicitar turno</a>
                     </li>
                 }
+                @else if(user.displayName == 'especialista')
+                {
+                    <li class="nav-item">
+                        <a class="nav-link all-nav-link" routerLink="/mis-pacientes" routerLinkActive="active">Mis pacientes</a>
+                    </li>
+                }
                 
                 <app-dropdown-menu [user]="user"></app-dropdown-menu>
+                
             }
             @else 
             {

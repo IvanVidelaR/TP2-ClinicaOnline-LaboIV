@@ -4,11 +4,12 @@ import { firstValueFrom } from 'rxjs';
 import { Usuario } from '../../models/usuario.model';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { HistorialClinicoComponent } from "../historial-clinico/historial-clinico.component";
 
 @Component({
   selector: 'app-usuarios',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, HistorialClinicoComponent],
   templateUrl: './usuarios.component.html',
   styleUrl: './usuarios.component.css',
 })
@@ -16,7 +17,9 @@ export class UsuariosComponent implements OnInit {
   protected loading = false;
   private databaseService = inject(DatabaseService);
   protected usuarios: Array<Usuario> = [];
+  protected usuarioSeleccionado?: Usuario;
   protected usuarioLoading: { [email: string]: boolean} = {};
+  protected historialClinico: boolean = false;
 
   public ngOnInit(): void {
     this.traerUsuarios();

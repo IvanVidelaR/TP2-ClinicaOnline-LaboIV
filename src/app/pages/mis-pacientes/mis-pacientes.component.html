@@ -1,0 +1,29 @@
+<div class="container">
+
+  @if(pacienteSeleccionado) {
+    <app-historial-clinico [usuario]="pacienteSeleccionado" [mostrarResenia]="true" (volver)="this.pacienteSeleccionado = undefined"></app-historial-clinico>
+  } @else {
+    @if(loading) {
+      <app-loader></app-loader>
+    } @else {
+      <h1 class="titulo-pacientes">Pacientes Atendidos</h1>
+      <div class="pacientes-container">
+        @for (paciente of pacientesAtendidosEspecialista; track $index) {
+          <div class="paciente-card">
+            <button 
+              class="paciente-btn" 
+              (click)="pacienteSeleccionado = paciente">
+              <img [src]="paciente.imagenDePerfil" alt="{{ paciente.nombre }}" class="paciente-img" />
+              <span class="paciente-nombre">{{ paciente.nombre }} {{ paciente.apellido }}</span>
+            </button>
+          </div>
+        }
+        @empty {
+          <p class="no-pacientes">No hay pacientes atendidos.</p>
+        }
+      </div>
+
+      
+    }
+  }
+</div>

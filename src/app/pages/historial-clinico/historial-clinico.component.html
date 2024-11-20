@@ -1,0 +1,58 @@
+@if(loading)
+{
+  <app-loader></app-loader>
+}
+@else {
+  <div class="historial-clinico-container">
+    <div class="historial-content">
+      <button type="button" class="btn btn-dark mt-2 w-100" (click)="emitirVolver()">Volver</button>
+      <h2 class="text-center">Historia Clinica de {{ usuario?.nombre }}</h2>
+      
+      @if(turnosMostrar.length > 0)
+      {
+        <div >
+          <!-- Tarjetas de Turnos -->
+          @for (turno of turnosMostrar; track $index) 
+          {
+            <div class="card turno-card mb-3">
+              <div class="card-header text-bg-secondary d-flex flex-row justify-content-between" style="gap: 10px">
+                <h5 class="mb-0">{{ turno.especialidad }}</h5>
+                <p class="mb-0">{{ turno.especialistaNombreCompleto }}</p>
+                <p class="mb-0">{{ turno.hora | date: 'dd/MM - HH:mm' }}</p>
+              </div>
+              <div class="card-body">
+                <div class="historia-clinica">
+                  <h6>Historia Clínica</h6>
+                  <ul>
+                    <li><strong>Altura:</strong> {{ turno.historiaClinica.altura }} cm</li>
+                    <li><strong>Peso:</strong> {{ turno.historiaClinica.peso }} kg</li>
+                    <li><strong>Presión:</strong> {{ turno.historiaClinica.presion }} mmHg</li>
+                    <li><strong>Temperatura:</strong> {{ turno.historiaClinica.temperatura }} °C</li>
+                    @for (dato of turno.historiaClinica.datosDinamicos; track $index) {
+                      @if(dato.clave != '' && dato.valor != '')
+                      {
+                        <strong>{{ dato.clave }}:</strong> {{ dato.valor }}
+                      }
+                    }
+                  </ul>
+                </div>
+                
+                @if(mostrarResenia)
+                {
+                  <div class="comentario">
+                    <strong>Reseña:</strong> {{ turno.comentario }}
+                  </div>
+                }
+              </div>
+            </div>
+          }
+
+        </div>
+      }
+      @else {
+        <p class="text-center text-muted">No se encontraron registros de historia clínica.</p>
+      } 
+    </div>
+  
+</div>
+}
