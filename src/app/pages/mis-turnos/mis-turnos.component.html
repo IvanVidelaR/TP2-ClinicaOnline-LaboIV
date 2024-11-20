@@ -258,19 +258,67 @@
       @else if(turno.estado == 'aceptado')
       {
         <div class="modal fade" [id]="'modalFinalizarTurno' + turno.id" 
-        aria-labelledby="modalLabel" tabindex="-1" aria-hidden="true" (hidden.bs.modal)="comentario = ''">
+            aria-labelledby="modalLabel" tabindex="-1" aria-hidden="true" 
+            (hidden.bs.modal)="resetFormulario()">
           <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
               <div class="modal-header">
-                <h1 class="modal-title fs-5" id="modalLabel">Ingrese una reseña o comentario de la consulta.</h1>
+                <h1 class="modal-title fs-5" id="modalLabel">Historia Clínica y Reseña</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
               </div>
               <div class="modal-body">
-                <textarea class="form-control" id="message-text" [(ngModel)]="comentario"></textarea>
+                <!-- Campos fijos -->
+                <div>
+                  <label for="altura">Altura (cm):</label>
+                  <input type="number" class="form-control" id="altura" [(ngModel)]="historiaClinica.altura" 
+                        (input)="validarAltura()">
+                  <div class="text-danger" *ngIf="errores.altura">{{ errores.altura }}</div>
+                </div>
+                <div>
+                  <label for="peso">Peso (kg):</label>
+                  <input type="number" class="form-control" id="peso" [(ngModel)]="historiaClinica.peso" 
+                        (input)="validarPeso()">
+                  <div class="text-danger" *ngIf="errores.peso">{{ errores.peso }}</div>
+                </div>
+                <div>
+                  <label for="temperatura">Temperatura (°C):</label>
+                  <input type="number" class="form-control" id="temperatura" [(ngModel)]="historiaClinica.temperatura" 
+                        (input)="validarTemperatura()">
+                  <div class="text-danger" *ngIf="errores.temperatura">{{ errores.temperatura }}</div>
+                </div>
+                <div>
+                  <label for="presion">Presión Arterial (mmHg):</label>
+                  <input type="number" class="form-control" id="presion" [(ngModel)]="historiaClinica.presion" 
+                        (input)="validarPresion()">
+                  <div class="text-danger" *ngIf="errores.presion">{{ errores.presion }}</div>
+                </div>
+
+                <!-- Datos dinámicos -->
+                @for (dato of historiaClinica.datosDinamicos; track $index) {
+                  <div>
+                    <label>Clave:</label>
+                    <input type="text" class="form-control" [(ngModel)]="dato.clave">
+                    <label>Valor:</label>
+                    <input type="text" class="form-control" [(ngModel)]="dato.valor">
+                    <button class="btn btn-danger mt-2 w-100" (click)="eliminarDatoDinamico($index)">Eliminar dato dinámico</button>
+                  </div>
+                }
+                
+                <button class="btn btn-secondary mt-2 w-100" [disabled]="historiaClinica.datosDinamicos.length >= 3" 
+                        (click)="agregarDatoDinamico()">Agregar dato dinámico</button>
+
+                <!-- Comentario -->
+                <div>
+                  <label for="comentario" class="mt-3">Reseña:</label>
+                  <textarea class="form-control" id="comentario" [(ngModel)]="comentario" (input)="validarComentario()"></textarea>
+                  <div class="text-danger" *ngIf="errores.comentario">{{ errores.comentario }}</div>
+                </div>
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-primary" (click)="finalizarTurno(turno)" data-bs-dismiss="modal">Finalizar turno</button>
+                <button type="button" class="btn btn-primary" 
+                        [disabled]="!formularioValido"
+                        (click)="finalizarTurno(turno)" data-bs-dismiss="modal">Finalizar turno</button>
               </div>
             </div>
           </div>

@@ -169,35 +169,119 @@ export class MisTurnosComponent implements OnDestroy {
     });
   }
 
+  historiaClinica = {
+    altura: '',
+    peso: '',
+    temperatura: '',
+    presion: '',
+    datosDinamicos: [] as { clave: string; valor: string }[],
+  };
+  
+  errores: any = {};
+  formularioValido = false;
+
+  resetFormulario() {
+    this.historiaClinica = { altura: '', peso: '', temperatura: '', presion: '', datosDinamicos: [] };
+    this.comentario = '';
+    this.errores = {};
+    this.formularioValido = false;
+  }
+  
+  validarAltura() {
+    const altura = +this.historiaClinica.altura;
+    if (!altura) {
+      this.errores.altura = 'La altura es obligatoria.';
+    } else if (altura < 60 || altura > 250) {
+      this.errores.altura = 'La altura debe estar entre 60 y 250 cm.';
+    } else {
+      delete this.errores.altura;
+    }
+    this.validarFormulario();
+  }
+  
+  validarPeso() {
+    const peso = +this.historiaClinica.peso;
+    if (!peso) {
+      this.errores.peso = 'El peso es obligatorio.';
+    } else if (peso < 5 || peso > 300) {
+      this.errores.peso = 'El peso debe estar entre 5 y 300 kg.';
+    } else {
+      delete this.errores.peso;
+    }
+    this.validarFormulario();
+  }
+  
+  validarTemperatura() {
+    const temperatura = +this.historiaClinica.temperatura;
+    if (!temperatura) {
+      this.errores.temperatura = 'La temperatura es obligatoria.';
+    } else if (temperatura < 35 || temperatura > 42) {
+      this.errores.temperatura = 'La temperatura debe estar entre 35°C y 42°C.';
+    } else {
+      delete this.errores.temperatura;
+    }
+    this.validarFormulario();
+  }
+  
+  validarPresion() {
+    const presion = +this.historiaClinica.presion;
+    if (!presion) {
+      this.errores.presion = 'La presión arterial es obligatoria.';
+    } else if (presion < 80 || presion > 180) {
+      this.errores.presion = 'La presión debe estar entre 80 y 180 mmHg.';
+    } else {
+      delete this.errores.presion;
+    }
+    this.validarFormulario();
+  }
+  
+  validarComentario() {
+    if (!this.comentario) {
+      this.errores.comentario = 'El comentario es obligatorio.';
+    } else if (this.comentario.length < 10 || this.comentario.length > 200) {
+      this.errores.comentario = 'El comentario debe tener entre 10 y 200 caracteres.';
+    } else {
+      delete this.errores.comentario;
+    }
+    this.validarFormulario();
+  }
+  
+  validarFormulario() {
+    this.formularioValido = Object.keys(this.errores).length === 0;
+  }
+
+  agregarDatoDinamico() {
+    this.historiaClinica.datosDinamicos.push({ clave: '', valor: '' });
+  }
+  
+  eliminarDatoDinamico(index: number) {
+    this.historiaClinica.datosDinamicos.splice(index, 1);
+  }
+  
   finalizarTurno(turno: Turno) {
-    if (this.comentario.length < 10) {
-      toast.warning('Su comentario debe ser de más de 10 caracteres');
-      return;
-    } else if (this.comentario.length > 200) {
-      toast.warning('Su comentario debe ser de menos de 200 caracteres');
+
+    if (!this.formularioValido || this.historiaClinica.altura == '' || this.historiaClinica.peso == '' || this.historiaClinica.presion == '' || this.historiaClinica.temperatura == '' || this.comentario == '') {
+      toast.warning('Debe completar todos los campos para finalizar el turno');
       return;
     }
-
+  
     const promise = new Promise(async (resolve, reject) => {
       try {
         await this.databaseService.updateDocumentFields('turnos', turno.id!, {
           estado: 'realizado',
           comentario: this.comentario,
+          historiaClinica: this.historiaClinica,
         });
         resolve(true);
       } catch (error) {
-        reject();
+        reject(error);
       }
     });
-      
+  
     toast.promise(promise, {
       loading: 'Finalizando turno...',
-      success: () => {
-        return 'Turno finalizado cargado con éxito';
-      },
-      error: () => {
-        return 'Hubo un problema al finalizar el turno';
-      }, 
+      success: 'Turno finalizado y cargado con éxito.',
+      error: 'Hubo un problema al finalizar el turno.',
     });
   }
 
