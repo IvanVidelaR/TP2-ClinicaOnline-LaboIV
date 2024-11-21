@@ -6,6 +6,7 @@ import { DatabaseService } from '../../services/database.service';
 import { Turno } from '../../models/turno.model';
 import { HistorialClinicoComponent } from "../historial-clinico/historial-clinico.component";
 import { LoaderComponent } from "../../components/loader/loader.component";
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-mis-pacientes',
@@ -21,14 +22,15 @@ export class MisPacientesComponent implements OnInit{
   private databaseService = inject(DatabaseService);
   private pacientesMailsAtendidosEspecialista: string[] = [];
   protected pacientesAtendidosEspecialista: Usuario[] = [];
+  private subscriptions: Subscription = new Subscription();
   protected user?: User | null;
   protected loading: boolean = false; 
 
   ngOnInit(): void {
     this.loading = true;
-    this.authenticationService.getCurrentUser().subscribe((user: User | null) => {
+    const authSub = this.authenticationService.getCurrentUser().subscribe((user: User | null) => {
       this.user = user;
-      this.databaseService.getDocument('turnos').subscribe((turnos: Turno[]) => {
+      const turnosSub = this.databaseService.getDocument('turnos').subscribe((turnos: Turno[]) => {
         turnos.forEach((turno: Turno) => { 
           if (turno.especialistaEmail == user?.email && turno.historiaClinica)
           {
@@ -38,10 +40,19 @@ export class MisPacientesComponent implements OnInit{
           }
         })
         this.pacientesMailsAtendidosEspecialista.forEach((pacienteEmail) => {
-          this.databaseService.getDocumentById('usuarios', pacienteEmail).subscribe((paciente: Usuario) => this.pacientesAtendidosEspecialista.push(paciente));
+          const usuarioSub = this.databaseService.getDocumentById('usuarios', pacienteEmail).subscribe((paciente: Usuario) => this.pacientesAtendidosEspecialista.push(paciente));
+          this.subscriptions.add(usuarioSub);
         })
         this.loading = false;
-      });      
+      });
+      this.subscriptions.add(turnosSub)
     });
+
+    this.subscriptions.add(authSub)
+  }
+
+  ngOnDestroy()
+  {
+    this.subscriptions.unsubscribe();
   }
 }
