@@ -6,6 +6,8 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { HistorialClinicoComponent } from "../historial-clinico/historial-clinico.component";
 import * as XLSX from 'xlsx';
+import { toast } from 'ngx-sonner';
+import { Turno } from '../../models/turno.model';
 
 @Component({
   selector: 'app-usuarios',
@@ -83,6 +85,79 @@ export class UsuariosComponent implements OnInit {
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Datos de los usuarios');
 
     XLSX.writeFile(workbook, 'datosUsuarios.xlsx');
+  }
+
+
+  descargarExcelTurnosTomados(usuario: Usuario)
+  {
+    const promise = new Promise(async (resolve, reject) => {
+      try {
+        let turnosTomados: Turno[] = [];
+
+        const turnos: any = await firstValueFrom(this.databaseService.getDocument('turnos'))
+        
+        for (const turno of turnos) {
+          if (turno.pacienteEmail === usuario.email) {
+            turno.hora = this.databaseService.convertTimestampToDate(turno.hora);
+            const especialista: Usuario = await firstValueFrom(
+              this.databaseService.getDocumentById('usuarios', turno.especialistaEmail)
+            );
+            turno.especialistaNombreCompleto = especialista.nombre;
+            turno.pacienteNombreCompleto = `${usuario.nombre} ${usuario.apellido}`;
+            turnosTomados.push(turno);
+          }
+        }
+
+        const datos = turnosTomados.map((turno: Turno) => {
+          const encuesta = turno.encuesta
+            ? `Comentario: ${turno.encuesta.comentario || 'No tiene'}; Recomendación: ${turno.encuesta.recomendacion || 'No tiene'}; Respuesta: ${turno.encuesta.respuesta || 'No tiene'}; Tratamiento: ${turno.encuesta.tratamiento || 'No tiene'}`
+            : 'NO TIENE';
+        
+          const datosDinamicos = turno.historiaClinica?.datosDinamicos
+            ? turno.historiaClinica.datosDinamicos
+              .map((dato: any) => `${dato.clave}: ${dato.valor}`)
+              .join('; ')
+            : 'NO TIENE';
+        
+          return {
+            'Paciente': turno.pacienteNombreCompleto,
+            'Especialista': turno.especialistaNombreCompleto,
+            'Especialidad': turno.especialidad,
+            'Fecha': turno.hora.toLocaleString(),
+            'Estado': turno.estado,
+            'Cancelado Por': turno.canceladoPor || 'NO TIENE',
+            'Motivo de Cancelación': turno.estado === 'cancelado' ? turno.comentario : 'NO TIENE',
+            'Motivo de Rechazo': turno.estado === 'rechazado' ? turno.comentario : 'NO TIENE',
+            'Reseña': turno.estado === 'realizado' ? turno.comentario : 'NO TIENE',
+            'Encuesta': encuesta,
+            'Calificación': turno.calificacion || 'NO TIENE',
+            'Altura (cm)': turno.historiaClinica?.altura || 'NO TIENE',
+            'Peso (kg)': turno.historiaClinica?.peso || 'NO TIENE',
+            'Temperatura (°C)': turno.historiaClinica?.temperatura || 'NO TIENE',
+            'Presión (mmHg)': turno.historiaClinica?.presion || 'NO TIENE',
+            'Datos Dinámicos': datosDinamicos,
+          };
+        });
+
+        const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datos);
+
+        const workbook: XLSX.WorkBook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Turnos tomados');
+
+        XLSX.writeFile(workbook, `turnosTomados-${usuario.nombre}_${usuario.apellido}.xlsx`);
+        resolve('Éxito');
+      }
+      catch (error) {
+        reject(error);
+      }
+      
+    });
+
+    toast.promise(promise, {
+      loading: 'Descargando excel con los turnos tomados...',
+      success: 'Turnos tomados descargados correctamente',
+      error: 'Ocurrió un error al descargar los turnos tomados'
+    });
   }
 
 }
