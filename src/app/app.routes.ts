@@ -40,53 +40,62 @@ export const routes: Routes = [
                 path: 'welcome-page',
                 loadComponent: () => 
                     import('./pages/welcome-page/welcome-page.component').then((m) => m.WelcomePageComponent),
+                data: { animation: 'WelcomePage' }
             },
             {
                 path: 'usuarios',
                 loadComponent: () => 
                     import('./pages/usuarios/usuarios.component').then((m) => m.UsuariosComponent),
-                canActivate: [noAuthAdminGuard]
+                canActivate: [noAuthAdminGuard],
+                data: { animation: 'UsersPage' }
             },
             {
                 path: 'mis-turnos',
                 loadComponent: () =>
                     import('./pages/mis-turnos/mis-turnos.component').then((m) => m.MisTurnosComponent),
-                canActivate: [noAuthGuard]
+                canActivate: [noAuthGuard],
+                data: { animation: 'MyAppointmentsPage' }
             },
             {
                 path: 'mi-perfil',
                 loadComponent: () =>
                     import('./pages/mi-perfil/mi-perfil.component').then((m) => m.MiPerfilComponent),
-                canActivate: [noAuthGuard]
+                canActivate: [noAuthGuard],
+                data: { animation: 'MyProfilePage' }
             },
             {
                 path: 'mis-horarios',
                 loadComponent: () =>
                     import('./pages/mis-horarios/mis-horarios.component').then((m) => m.MisHorariosComponent),
-                canActivate: [noAuthGuard]
+                canActivate: [noAuthGuard],
+                data: { animation: 'MySchedulesPage' }
             },
             {
                 path: 'turnos',
                 loadComponent: () => 
                     import('./pages/turnos/turnos.component').then((m) => m.TurnosComponent),
-                canActivate: [noAuthAdminGuard]
+                canActivate: [noAuthAdminGuard],
+                data: { animation: 'AppointmentsPage' }
             },
             {
                 path: 'solicitar-turno',
                 loadComponent: () => 
                     import('./pages/solicitar-turno/solicitar-turno.component').then((m) => m.SolicitarTurnoComponent),
-                canActivate: [noAuthGuard]
+                canActivate: [noAuthGuard],
+                data: { animation: 'RequestAppointmentPage' }
             },
             {
                 path: 'mis-pacientes',
                 loadComponent: () => 
                     import('./pages/mis-pacientes/mis-pacientes.component').then((m) => m.MisPacientesComponent),
-                canActivate: [noAuthGuard]
+                canActivate: [noAuthGuard],
+                data: { animation: 'MyPatientsPage' }
             },
             {
                 path: 'error',
                 loadComponent: () => 
-                    import('./pages/error/error.component').then((m) => m.ErrorComponent)
+                    import('./pages/error/error.component').then((m) => m.ErrorComponent),
+                data: { animation: 'ErrorPage' } 
             },
         ]
     },

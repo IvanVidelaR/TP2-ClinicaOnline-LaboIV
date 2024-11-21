@@ -1,7 +1,7 @@
 <div class="secondary-container">
     <app-header style="position: sticky; 
     top: 0; z-index: 1000; background-color: white;"></app-header>
-    <div class="main-content">
+    <div [@routeAnimations]="getRouteAnimationData()" class="main-content">
         <router-outlet/>
     </div>
     <app-footer></app-footer>
