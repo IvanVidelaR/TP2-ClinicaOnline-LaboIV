@@ -6,6 +6,7 @@ import { Turno } from '../../models/turno.model';
 import { LoaderComponent } from "../../components/loader/loader.component";
 import { DatePipe } from '@angular/common';
 import { jsPDF } from "jspdf";
+import { Especialista } from '../../models/especialista.model';
 
 @Component({
   selector: 'app-historial-clinico',
@@ -15,6 +16,7 @@ import { jsPDF } from "jspdf";
   styleUrl: './historial-clinico.component.css'
 })
 export class HistorialClinicoComponent implements OnInit{
+
   
   @Input() usuario?: Usuario;
   @Input() mostrarResenia: boolean = false; 
@@ -22,8 +24,11 @@ export class HistorialClinicoComponent implements OnInit{
   private databaseService = inject(DatabaseService);
   private subscriptions: Subscription = new Subscription();
   protected turnosMostrar: Turno[] = [];
+  protected turnosFiltrados: Turno[] = [];
+  protected especialistas: Especialista[] = [];
   protected loading: boolean = false;
-  
+  protected especialistaSeleccionado: Especialista | null = null;
+
   ngOnInit(): void {
     this.loading = true;
     const turnosSubscription = this.databaseService.getDocument('turnos').subscribe((turnos: any) => {
@@ -45,8 +50,29 @@ export class HistorialClinicoComponent implements OnInit{
         this.subscriptions.add(usuarioSubscription);
       })
       this.loading = false;
+      this.turnosFiltrados = this.turnosMostrar;
     });
     this.subscriptions.add(turnosSubscription);
+    const especialistasSubscription = this.databaseService.getDocument('usuarios').subscribe((usuarios) => {
+      usuarios.forEach((usuario: any) => {
+        if (usuario.perfil == 'especialista') {
+          this.especialistas.push(usuario);
+        }
+      });
+    });
+    this.subscriptions.add(especialistasSubscription);
+  }
+  
+  filtrarPorEspecialista(especialista: Especialista | null = null) {
+    if (especialista == null)
+    {
+      this.turnosFiltrados = this.turnosMostrar;
+    }
+    else
+    {
+      this.turnosFiltrados = this.turnosMostrar.filter((turno: Turno) => turno.especialistaEmail == especialista.email);
+    }
+    this.especialistaSeleccionado = especialista;
   }
   
   descargarPDFHistoriaClinica() {
@@ -75,7 +101,7 @@ export class HistorialClinicoComponent implements OnInit{
   
     let yPosition = 50; 
     let turnoCount = 1;
-    this.turnosMostrar.forEach((turno) => {
+    this.turnosFiltrados.forEach((turno) => {
       if (yPosition > 270) {
           pdf.addPage();
           yPosition = 20;

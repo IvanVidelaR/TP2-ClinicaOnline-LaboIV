@@ -1,5 +1,5 @@
 .historial-clinico-container {
-  max-width: 800px;
+  min-width: 500px;
   margin: auto;
   padding: 20px;
   background-color: #f8f9fa;

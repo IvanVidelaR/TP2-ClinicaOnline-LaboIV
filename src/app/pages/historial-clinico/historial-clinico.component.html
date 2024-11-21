@@ -7,12 +7,34 @@
     <div class="historial-content">
       <button type="button" class="btn btn-dark mt-2 w-100" (click)="emitirVolver()">Volver</button>
       <h2 class="text-center">Historia Clinica de {{ usuario?.nombre }}</h2>
-      
-      @if(turnosMostrar.length > 0)
+      <div class="mt-3">
+        <h5 class="text-center">Filtrar por Profesional: </h5>
+        <div class="d-flex flex-wrap justify-content-center">
+          <button 
+            type="button" 
+            class="btn btn-outline-secondary" 
+            [class.btn-secondary]="especialistaSeleccionado === null"
+            [class.text-white]="especialistaSeleccionado === null"
+            (click)="filtrarPorEspecialista()">
+            Todos
+          </button>
+          @for (especialista of especialistas; track $index)
+          {
+            <button 
+              type="button" 
+              class="btn btn-outline-secondary" 
+              [class.btn-secondary]="especialistaSeleccionado === especialista"
+              [class.text-white]="especialistaSeleccionado === especialista"
+              (click)="filtrarPorEspecialista(especialista)">
+              {{ especialista.nombre + ' ' + especialista.apellido }}
+            </button>
+          }
+        </div>
+      </div>
+      @if(turnosFiltrados.length > 0)
       {
         <div >
-          <!-- Tarjetas de Turnos -->
-          @for (turno of turnosMostrar; track $index) 
+          @for (turno of turnosFiltrados; track $index) 
           {
             <div class="card turno-card mb-3">
               <div class="card-header text-bg-secondary d-flex flex-row justify-content-between" style="gap: 10px">
