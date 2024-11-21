@@ -62,7 +62,7 @@
         </div>
         <button type="button" class="btn btn-success mt-2 w-100 d-flex justify-content-center align-items-center" (click)="descargarExcelDatosUsuarios()">
           Descargar excel datos usuarios
-          <i class="fas fa-file-excel" style="font-size: 1.5em; margin-left: 10px;"></i>
+          <i class="fas fa-file-excel fa-bounce" style="font-size: 1.5em; margin-left: 10px;"></i>
         </button>
         <button routerLink="/sign-up/eleccion-perfil" type="button" class="btn btn-primary btn-generar mt-2 w-100 text-white">Generar nuevo usuario</button>
       </div>
@@ -121,7 +121,7 @@
                   <p><strong>Obra social:</strong> {{usuario.obraSocial}}</p>
                   <button type="button" class="btn btn-success mt-2 w-100 d-flex justify-content-center align-items-center" (click)="descargarExcelTurnosTomados(usuario)">
                     Descargar excel turnos tomados
-                    <i class="fas fa-file-excel" style="font-size: 1.5em; margin-left: 10px;"></i>
+                    <i class="fas fa-file-excel fa-bounce" style="font-size: 1.5em; margin-left: 10px;"></i>
                   </button>
                   <button type="button" class="btn btn-dark mt-2 w-100" data-bs-dismiss="modal" (click)="historialClinico = true; usuarioSeleccionado = usuario">Historia clínica</button>
                 }
