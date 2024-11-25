@@ -138,6 +138,13 @@ export class AuthComponent {
                 'El especialista no está habilitado para ingresar.'
               );
             }
+            else
+            {
+              this.databaseService.setDocument('logs_usuarios', {
+                usuario: usuarioDoc,
+                fecha: new Date(),
+              })
+            }
           }
           else
           {

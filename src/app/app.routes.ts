@@ -92,6 +92,20 @@ export const routes: Routes = [
                 data: { animation: 'MyPatientsPage' }
             },
             {
+                path: 'estadisticas',
+                loadComponent: () => 
+                    import('./pages/estadisticas/estadisticas.component').then((m) => m.EstadisticasComponent),
+                canActivate: [noAuthAdminGuard],
+                data: { animation: 'StatisticsPage' }
+            },
+            {
+                path: 'estadisticas/logs-ingresos',
+                loadComponent: () => 
+                    import('./pages/estadisticas/log-usuarios/log-usuarios.component').then((m) => m.LogUsuariosComponent),
+                canActivate: [noAuthAdminGuard],
+                data: { animation: 'UserLogsPage' }
+            },
+            {
                 path: 'error',
                 loadComponent: () => 
                     import('./pages/error/error.component').then((m) => m.ErrorComponent),

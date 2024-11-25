@@ -1,0 +1,15 @@
+<div class="container">
+  <div class="stats-container">
+    <h1 class="stats-title">Estadísticas</h1>
+    <div class="buttons-container">
+      @for (boton of botonesEstadisticas; track $index) 
+      {
+        <div class="stats-button" [routerLink]="boton.routerLink">
+          <img [src]="boton.imagen" [alt]="boton.titulo" class="button-image">
+          <h3 class="button-title">{{ boton.titulo }}</h3>
+          <p class="button-message">{{ boton.mensaje }}</p>
+        </div>
+      }
+    </div>
+  </div>  
+</div>

@@ -1,0 +1,39 @@
+
+.main-title {
+  font-size: 2em;
+  margin: 0;
+}
+
+.main-color {
+  color: #084887;
+}
+
+.main-background-color {
+  background-color: #084887; 
+}
+
+.modal-content {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.modal-header {
+  border-bottom: none;
+}
+
+.card {
+  border: none;
+}
+
+.card-header {
+  padding: 20px;
+}
+
+.card-body {
+  padding: 20px;
+  background-color: #f8f9fa;
+}
+
+.modal-footer {
+  border-top: none;
+}
