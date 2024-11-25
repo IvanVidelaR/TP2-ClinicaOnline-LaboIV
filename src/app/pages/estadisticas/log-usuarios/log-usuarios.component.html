@@ -46,6 +46,10 @@
           </div>
         </div>
       </div>
+      <button type="button" class="btn btn-success mt-2 w-100 d-flex justify-content-center align-items-center" (click)="descargarExcelDatosLogs()">
+        Descargar excel logs de ingreso al sistema
+        <i class="fas fa-file-excel fa-bounce" style="font-size: 1.5em; margin-left: 10px;"></i>
+      </button>
     </div>
   </div>
   @for (log of logsUsuarios; track $index)
