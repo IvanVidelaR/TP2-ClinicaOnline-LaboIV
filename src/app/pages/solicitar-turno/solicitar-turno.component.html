@@ -11,12 +11,12 @@
       <h2>Elija un paciente:</h2>
       <div class="especialistas-pacientes-container">
         @for (paciente of pacientes; track $index) {
-          <div class="opcion" [class.seleccionada]="paciente === pacienteSeleccionado" (click)="seleccionarPaciente(paciente)">
+          <div class="opcion" [appHighlightSelected]="paciente === pacienteSeleccionado" (click)="seleccionarPaciente(paciente)">
             <img
               [src]="paciente.imagenDePerfil"
               [alt]="'img_' + paciente.email"
             />
-            <p>{{ paciente.nombre }} {{ paciente.apellido }} {{paciente.email}}</p>
+            <p>{{ paciente.nombre }} {{ paciente.apellido }}</p>
           </div>
         }
       </div>
@@ -26,7 +26,7 @@
         <h2>Elija una especialidad:</h2>
         <div class="especialidades-container">
           @for (especialidad of especialidades; track $index) {
-            <div class="opcion" [class.seleccionada]="especialidad.tipo === especialidadSeleccionada" (click)="seleccionarEspecialidad(especialidad.tipo)">
+            <div class="opcion" [appHighlightSelected]="especialidad.tipo === especialidadSeleccionada" (click)="seleccionarEspecialidad(especialidad.tipo)">
               <img
                 [src]="especialidad.imagen"
                 [alt]="'img_' + especialidad.tipo"
@@ -42,7 +42,7 @@
       <h2>Elija una especialidad:</h2>
       <div class="especialidades-container">
         @for (especialidad of especialidades; track $index) {
-          <div class="opcion" [class.seleccionada]="especialidad.tipo === especialidadSeleccionada" (click)="seleccionarEspecialidad(especialidad.tipo)">
+          <div class="opcion" [appHighlightSelected]="especialidad.tipo === especialidadSeleccionada" (click)="seleccionarEspecialidad(especialidad.tipo)">
             <img
               [src]="especialidad.imagen"
               [alt]="'img_' + especialidad.tipo"
@@ -56,7 +56,7 @@
       <h2>Elija un especialista:</h2>
       <div class="especialistas-pacientes-container">
         @for(especialista of especialistasEspecialidad; track $index) {
-          <div class="opcion" [class.seleccionada]="especialista === especialistaSeleccionado"(click)="seleccionarEspecialista(especialista)" >
+          <div class="opcion" [appHighlightSelected]="especialista === especialistaSeleccionado" (click)="seleccionarEspecialista(especialista)" >
             <img
               [src]="especialista.imagenDePerfil"
               [alt]="'img_' + especialista.email"
@@ -78,7 +78,7 @@
           {
               @for(turno of dia.turnos; track $index)
               {
-                <div class="horario" [class.seleccionado]="turno === turnoSeleccionado" (click)="seleccionarTurno(turno)">
+                <div class="horario" [appHighlightSelected]="turno === turnoSeleccionado" (click)="seleccionarTurno(turno)">
                   {{ turno.hora | date: 'dd/MM - HH:mm' }}
                 </div>
               }

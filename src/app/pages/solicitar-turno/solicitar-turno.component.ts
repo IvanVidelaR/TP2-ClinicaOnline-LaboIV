@@ -13,11 +13,12 @@ import { User } from '@angular/fire/auth';
 import { toast } from 'ngx-sonner';
 import { Paciente } from '../../models/paciente.model';
 import { Router } from '@angular/router';
+import { HighlightSelectedDirective } from '../../directives/highlight-selected.directive';
 
 @Component({
   selector: 'app-solicitar-turno',
   standalone: true,
-  imports: [LoaderComponent, DatePipe],
+  imports: [LoaderComponent, DatePipe, HighlightSelectedDirective],
   templateUrl: './solicitar-turno.component.html',
   styleUrl: './solicitar-turno.component.css'
 })
