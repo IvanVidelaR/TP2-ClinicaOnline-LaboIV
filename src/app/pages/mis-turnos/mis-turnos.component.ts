@@ -10,11 +10,12 @@ import { Subscription } from 'rxjs';
 import { User } from '@angular/fire/auth';
 import { AuthenticationService } from '../../services/authentication.service';
 import { Encuesta } from '../../models/encuesta.model';
+import { EstadoTurnoPipe } from '../../pipes/estado-turno.pipe';
 
 @Component({
   selector: 'app-turnos',
   standalone: true,
-  imports: [DatePipe, FormsModule, CommonModule],
+  imports: [DatePipe, FormsModule, CommonModule, EstadoTurnoPipe],
   templateUrl: './mis-turnos.component.html',
   styleUrls: ['./mis-turnos.component.css'],
 })
