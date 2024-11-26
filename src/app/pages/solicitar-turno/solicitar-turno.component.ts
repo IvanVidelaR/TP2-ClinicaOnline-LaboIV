@@ -140,7 +140,7 @@ export class SolicitarTurnoComponent implements OnInit{
     const dias: DiasDisponibles[] = [];
     const hoy = new Date();
   
-    for (let i = 0; i < 15; i++) {
+    for (let i = 1; i < 16; i++) {
       const dia = new Date(hoy);
       dia.setDate(hoy.getDate() + i);
   
