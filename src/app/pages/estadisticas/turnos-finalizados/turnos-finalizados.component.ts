@@ -166,7 +166,7 @@ export class TurnosFinalizadosComponent implements OnInit, OnDestroy{
     const centroX = 105;
     pdf.setFontSize(20);
     pdf.setFont('times', 'bold'); 
-    pdf.text(`Cantidad de turnos solicitados del ${fechaInicio} al ${fechaFin}`, centroX, 38, { align: 'center' });
+    pdf.text(`Cantidad de turnos finalizados del ${fechaInicio} al ${fechaFin}`, centroX, 38, { align: 'center' });
     pdf.setFontSize(12);
     pdf.setFont('times', 'normal'); 
   
@@ -177,11 +177,11 @@ export class TurnosFinalizadosComponent implements OnInit, OnDestroy{
     pdf.setLineWidth(0.5);
     pdf.line(10, 40, 200, 40); 
 
-    const doughnutChart = document.getElementById('doughnutChart') as HTMLCanvasElement;
-    const imgData = doughnutChart.toDataURL('image/png');
+    const pieChart = document.getElementById('pieChart') as HTMLCanvasElement;
+    const imgData = pieChart.toDataURL('image/png');
 
     pdf.addImage(imgData, 'PNG', 55, 50, 100, 100);
   
-    pdf.save(`Cantidad-de-turnos-en-lapso-de-tiempo.pdf`);
+    pdf.save(`Cantidad-de-turnos-finalizados-en-lapso-de-tiempo.pdf`);
   }
 }
