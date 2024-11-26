@@ -239,7 +239,13 @@
 
             <!-- Botón de Iniciar Sesión -->
             <p class="auth__create-account">¿Ya tienes una cuenta? <span routerLink="/auth">Iniciar Sesión</span></p>
-            <button class="w-100 btn btn-lg btn-dark mt-3" type="submit">Crear Cuenta</button >
+            @if(user && user.displayName === 'administrador')
+            {
+                <button class="w-100 btn btn-lg btn-dark mt-3" type="submit" appTooltip [tooltipMessage]="'Haga clic para generar usuario ' + this.perfil">Crear Cuenta</button >
+            }
+            @else {
+                <button class="w-100 btn btn-lg btn-dark mt-3" type="submit" appTooltip [tooltipMessage]="'Haga clic para registrarse como ' + this.perfil">Crear Cuenta</button>
+            }
             <p class="mt-4 mb-3 text-muted text-center">&copy; IvanVidelaR 2024</p>
         </form>
     </div>

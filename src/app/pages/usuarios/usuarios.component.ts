@@ -9,11 +9,12 @@ import * as XLSX from 'xlsx';
 import { toast } from 'ngx-sonner';
 import { Turno } from '../../models/turno.model';
 import { FormatoDniPipe } from '../../pipes/formato-dni.pipe';
+import { TooltipDirective } from '../../directives/tooltip.directive';
 
 @Component({
   selector: 'app-usuarios',
   standalone: true,
-  imports: [CommonModule, RouterLink, HistorialClinicoComponent, FormatoDniPipe],
+  imports: [CommonModule, RouterLink, HistorialClinicoComponent, FormatoDniPipe, TooltipDirective],
   templateUrl: './usuarios.component.html',
   styleUrl: './usuarios.component.css',
 })

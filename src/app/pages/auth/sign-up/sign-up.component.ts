@@ -21,11 +21,12 @@ import { FirebaseError } from '@angular/fire/app';
 import { RecaptchaModule, RecaptchaFormsModule } from 'ng-recaptcha';
 import { Especialidad } from '../../../models/especialidad.model';
 import { firstValueFrom } from 'rxjs';
+import { TooltipDirective } from '../../../directives/tooltip.directive';
 
 @Component({
   selector: 'app-sign-up',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, RouterLink, RecaptchaModule, RecaptchaFormsModule ],
+  imports: [ReactiveFormsModule, CommonModule, RouterLink, RecaptchaModule, RecaptchaFormsModule, TooltipDirective],
   templateUrl: './sign-up.component.html',
   styleUrl: './sign-up.component.css',
 })
@@ -44,11 +45,13 @@ export class SignUpComponent {
   
   protected especialidades: Especialidad[] = []
 
+  protected user: User | null = null;
   constructor(private route: ActivatedRoute) {
     this.route.params.subscribe((params) => {
       this.perfil = params['perfil'];
 
       this.authenticationService.getCurrentUser().subscribe((user) => {
+        this.user = user;
         if (user?.displayName === 'administrador') {
           this.generarNuevoUsuarioDesdeUsuarios = true;
         } else {

@@ -5,11 +5,12 @@ import { DatabaseService } from '../../../services/database.service';
 import * as XLSX from 'xlsx'
 import { FormatoDniPipe } from '../../../pipes/formato-dni.pipe';
 import { FechaRelativaPipe } from '../../../pipes/fecha-relativa.pipe';
+import { TooltipDirective } from '../../../directives/tooltip.directive';
 
 @Component({
   selector: 'app-log-usuarios',
   standalone: true,
-  imports: [FormatoDniPipe, FechaRelativaPipe],
+  imports: [FormatoDniPipe, FechaRelativaPipe, TooltipDirective],
   templateUrl: './log-usuarios.component.html',
   styleUrl: './log-usuarios.component.css'
 })
