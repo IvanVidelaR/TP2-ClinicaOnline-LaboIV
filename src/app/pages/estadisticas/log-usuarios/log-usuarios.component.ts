@@ -34,6 +34,10 @@ export class LogUsuariosComponent implements OnInit{
     this.subscriptions.add(logsUsuariosSub);
   }
 
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
+  }
+  
   descargarExcelDatosLogs() {
     const datos = this.logsUsuarios.map((log: LogUsuario) => ({
       FechaDeIngreso: log.fecha.toLocaleString(),
