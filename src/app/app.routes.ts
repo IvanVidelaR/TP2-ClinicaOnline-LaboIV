@@ -127,6 +127,13 @@ export const routes: Routes = [
                 data: { animation: 'RequestAppointmentPage' }
             },
             {
+                path: 'estadisticas/turnos-finalizados',
+                loadComponent: () => 
+                    import('./pages/estadisticas/turnos-finalizados/turnos-finalizados.component').then((m) => m.TurnosFinalizadosComponent),
+                canActivate: [noAuthAdminGuard],
+                data: { animation: 'FinishedtAppointmentPage' }
+            },
+            {
                 path: 'error',
                 loadComponent: () => 
                     import('./pages/error/error.component').then((m) => m.ErrorComponent),

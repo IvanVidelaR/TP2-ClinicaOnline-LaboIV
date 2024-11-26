@@ -1,0 +1,54 @@
+<div class="container">
+  
+  @if(loading) 
+  {
+    <app-loader style="position: absolute;"></app-loader>
+  }
+  @else
+  {
+    <h1 class="text-center">Cantidad de turnos finalizados por un médico en un lapso de tiempo: </h1>
+    <div class="date-range-container text-center my-4">
+      <h3 class="mb-3">Seleccione el lapso de tiempo</h3>
+      <div class="row justify-content-center">
+        <!-- Fecha de inicio -->
+        <div class="col-md-6 col-12 mb-3">
+          <label for="fechaInicio" class="form-label">Fecha de inicio:</label>
+          <input
+            type="date"
+            id="fechaInicio"
+            class="form-control form-control-lg text-center"
+            [(ngModel)]="fechaInicio"
+          />
+        </div>
+        <!-- Fecha de fin -->
+        <div class="col-md-6 col-12 mb-3">
+          <label for="fechaFin" class="form-label">Fecha de fin:</label>
+          <input
+            type="date"
+            id="fechaFin"
+            class="form-control form-control-lg text-center"
+            [(ngModel)]="fechaFin"
+          />
+        </div>
+      </div>
+      <button
+        type="button"
+        class="btn btn-primary mt-3"
+        (click)="filtrarTurnos()"
+      >
+        Filtrar Turnos
+        <i class="fa-solid fa-filter ms-2"></i>
+      </button>
+    </div>
+    
+  }
+  <div class="canvas-container">
+    <canvas id="pieChart"></canvas>
+    @if(!loading)
+    {
+      <button type="button" class="btn btn-danger mt-2 w-100 d-flex justify-content-center align-items-center" (click)="descargarPDFTurnos()">Generar PDF Turnos finalizados por médico en un lapso de tiempo
+        <i class="fa-solid fa-file-pdf fa-bounce" style="font-size: 1.5em; margin-left: 10px;"></i>
+      </button>
+    }
+  </div>
+</div>
