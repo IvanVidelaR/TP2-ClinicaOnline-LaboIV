@@ -113,6 +113,13 @@ export const routes: Routes = [
                 data: { animation: 'SpecialtyAppointmentPage' }
             },
             {
+                path: 'estadisticas/turnos-por-dia',
+                loadComponent: () => 
+                    import('./pages/estadisticas/turnos-por-dia/turnos-por-dia.component').then((m) => m.TurnosPorDiaComponent),
+                canActivate: [noAuthAdminGuard],
+                data: { animation: 'DayAppointmentPage' }
+            },
+            {
                 path: 'error',
                 loadComponent: () => 
                     import('./pages/error/error.component').then((m) => m.ErrorComponent),

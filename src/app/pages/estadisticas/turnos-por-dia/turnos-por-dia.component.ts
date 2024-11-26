@@ -7,13 +7,13 @@ import { LoaderComponent } from "../../../components/loader/loader.component";
 import { jsPDF } from "jspdf";
 
 @Component({
-  selector: 'app-turnos-por-especialidad',
+  selector: 'app-turnos-por-dia',
   standalone: true,
   imports: [LoaderComponent],
-  templateUrl: './turnos-por-especialidad.component.html',
-  styleUrl: './turnos-por-especialidad.component.css'
+  templateUrl: './turnos-por-dia.component.html',
+  styleUrl: './turnos-por-dia.component.css'
 })
-export class TurnosPorEspecialidadComponent implements OnInit, OnDestroy{
+export class TurnosPorDiaComponent implements OnInit, OnDestroy{
 
   private databaseService = inject(DatabaseService);
   private subscriptions = new Subscription();
@@ -30,23 +30,34 @@ export class TurnosPorEspecialidadComponent implements OnInit, OnDestroy{
   cargarDataTurnos()
   {
     this.loading = true;
-    const turnosSub = this.databaseService.getDocument('turnos').subscribe((turnos: Turno[]) => {
-      let contadorTurnosPorEspecialidad: Record<string, number> = {}
+    const turnosSub = this.databaseService.getDocument('turnos').subscribe((turnos: any[]) => {
+      let contadorTurnosPorDia: Record<string, number> = {
+        'Lunes': 0,
+        'Martes': 0,
+        'Miércoles': 0,
+        'Jueves': 0,
+        'Viernes': 0,
+        'Sábado': 0
+      }
 
-      turnos.forEach((turno: Turno) => {
-        contadorTurnosPorEspecialidad[turno.especialidad] = (contadorTurnosPorEspecialidad[turno.especialidad] || 0) + 1;
+      turnos.forEach((turno: any) => {
+        turno.hora = this.databaseService.convertTimestampToDate(turno.hora)
+
+        let diaSemanaNum: number = (turno.hora).getDay();
+        let diaSemanaString: string = (Object.keys(contadorTurnosPorDia))[diaSemanaNum - 1];
+
+        contadorTurnosPorDia[diaSemanaString] = (contadorTurnosPorDia[diaSemanaString] || 0) + 1;
       });
 
-      const barChart = document.getElementById('barChart') as HTMLCanvasElement;
+      const polarAreaChart = document.getElementById('polarAreaChart') as HTMLCanvasElement;
 
-      new Chart(barChart, {
-        type: 'bar' as ChartType,
+      new Chart(polarAreaChart, {
+        type: 'polarArea' as ChartType,
         data: {
-          labels: Object.keys(contadorTurnosPorEspecialidad),
+          labels: Object.keys(contadorTurnosPorDia),
           datasets: [
             {
-              label: 'Turnos por especialidad',
-              data: Object.values(contadorTurnosPorEspecialidad)
+              data: Object.values(contadorTurnosPorDia)
             }
           ]
         },
@@ -101,11 +112,10 @@ export class TurnosPorEspecialidadComponent implements OnInit, OnDestroy{
     const centroX = 105;
     pdf.setFontSize(20);
     pdf.setFont('times', 'bold'); 
-    pdf.text('Cantidad de turnos por especialidad', centroX, 20, { align: 'center' });
+    pdf.text('Cantidad de turnos por día', centroX, 20, { align: 'center' });
     pdf.setFontSize(12);
     pdf.setFont('times', 'normal'); 
   
-
     pdf.setFontSize(10);
     pdf.setFont('times', 'normal');  
     pdf.text(`Emisión: ${fechaActual}`, 200, 28, { align: 'right' });
@@ -113,11 +123,11 @@ export class TurnosPorEspecialidadComponent implements OnInit, OnDestroy{
     pdf.setLineWidth(0.5);
     pdf.line(10, 40, 200, 40); 
 
-    const barChart = document.getElementById('barChart') as HTMLCanvasElement;
-    const imgData = barChart.toDataURL('image/png');
+    const polarAreaChart = document.getElementById('polarAreaChart') as HTMLCanvasElement;
+    const imgData = polarAreaChart.toDataURL('image/png');
 
-    pdf.addImage(imgData, 'PNG', margen, 50, 170, 90);
+    pdf.addImage(imgData, 'PNG', 55, 50, 100, 100);
   
-    pdf.save(`Cantidad-de-turnos-por-especialidad.pdf`);
+    pdf.save(`Cantidad-de-turnos-por-dia.pdf`);
   }
 }
