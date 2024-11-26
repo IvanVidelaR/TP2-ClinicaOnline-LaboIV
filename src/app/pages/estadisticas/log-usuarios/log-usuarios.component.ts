@@ -2,14 +2,14 @@ import { Component, inject, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { LogUsuario } from '../../../models/logUsuario.model';
 import { DatabaseService } from '../../../services/database.service';
-import { DatePipe } from '@angular/common';
 import * as XLSX from 'xlsx'
 import { FormatoDniPipe } from '../../../pipes/formato-dni.pipe';
+import { FechaRelativaPipe } from '../../../pipes/fecha-relativa.pipe';
 
 @Component({
   selector: 'app-log-usuarios',
   standalone: true,
-  imports: [DatePipe, FormatoDniPipe],
+  imports: [FormatoDniPipe, FechaRelativaPipe],
   templateUrl: './log-usuarios.component.html',
   styleUrl: './log-usuarios.component.css'
 })
