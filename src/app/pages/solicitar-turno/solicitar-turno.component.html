@@ -74,21 +74,22 @@
     {
       <h2>Elija una fecha y horario: </h2>
       <div class="horarios-container">
-          @for (dia of diasDisponibles; track $index) 
-          {
-              @for(turno of dia.turnos; track $index)
-              {
-                <div class="horario" [appHighlightSelected]="turno === turnoSeleccionado" (click)="seleccionarTurno(turno)">
-                  {{ turno.hora | date: 'dd/MM - HH:mm' }}
-                </div>
-              }
-          }
+        @for (dia of diasDisponibles; track $index) 
+        {
+            @for(turno of dia.turnos; track $index)
+            {
+              <div class="horario" [appHighlightSelected]="turno === turnoSeleccionado" (click)="seleccionarTurno(turno)">
+                {{ turno.hora | date: 'dd/MM - HH:mm' }}
+              </div>
+            }
+        }
       </div>
-    }
-
-    @if(turnoSeleccionado)
-    {
-      <button type="button" class="btn btn-dark mt-2" (click)="solicitarTurno()">Solicitar turno</button>
+      @if(turnoSeleccionado)
+      {
+        <div class="horarios-container" style="width: 100%;">
+          <button type="button" class="btn btn-dark mt-2 w-100" (click)="solicitarTurno()">Solicitar turno</button>
+        </div>
+      }
     }
   }
 </div>
