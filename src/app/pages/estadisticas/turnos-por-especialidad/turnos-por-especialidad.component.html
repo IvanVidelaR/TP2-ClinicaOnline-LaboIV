@@ -1,0 +1,20 @@
+<div class="container">
+  
+  @if(loading) 
+  {
+    <app-loader style="position: absolute;"></app-loader>
+  }
+  @else
+  {
+    <h1>Cantidad de turnos por especialidad: </h1>
+  }
+  <div class="canvas-container">
+    <canvas id="barChart"></canvas>
+    @if(!loading)
+    {
+      <button type="button" class="btn btn-danger mt-2 w-100 d-flex justify-content-center align-items-center" (click)="descargarPDFTurnos()">Generar PDF Turnos por especialidad
+        <i class="fa-solid fa-file-pdf fa-bounce" style="font-size: 1.5em; margin-left: 10px;"></i>
+      </button>
+    }
+  </div>
+</div>

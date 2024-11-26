@@ -106,6 +106,13 @@ export const routes: Routes = [
                 data: { animation: 'UserLogsPage' }
             },
             {
+                path: 'estadisticas/turnos-por-especialidad',
+                loadComponent: () => 
+                    import('./pages/estadisticas/turnos-por-especialidad/turnos-por-especialidad.component').then((m) => m.TurnosPorEspecialidadComponent),
+                canActivate: [noAuthAdminGuard],
+                data: { animation: 'SpecialtyAppointmentPage' }
+            },
+            {
                 path: 'error',
                 loadComponent: () => 
                     import('./pages/error/error.component').then((m) => m.ErrorComponent),
