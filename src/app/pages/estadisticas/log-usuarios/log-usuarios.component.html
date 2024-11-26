@@ -76,7 +76,7 @@
                 <p><strong>Nombre:</strong> {{log.usuario.nombre}}</p>
                 <p><strong>Apellido:</strong> {{log.usuario.apellido}}</p>
                 <p><strong>Edad:</strong> {{log.usuario.edad}}</p>
-                <p><strong>DNI:</strong> {{log.usuario.dni}}</p>
+                <p><strong>DNI:</strong> {{log.usuario.dni | formatoDni}}</p>
                 <p><strong>Email:</strong> {{log.usuario.email}}</p>
                 @if(log.usuario.perfil == 'especialista')
                 {

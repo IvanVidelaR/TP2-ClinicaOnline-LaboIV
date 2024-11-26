@@ -8,11 +8,12 @@ import { HistorialClinicoComponent } from "../historial-clinico/historial-clinic
 import * as XLSX from 'xlsx';
 import { toast } from 'ngx-sonner';
 import { Turno } from '../../models/turno.model';
+import { FormatoDniPipe } from '../../pipes/formato-dni.pipe';
 
 @Component({
   selector: 'app-usuarios',
   standalone: true,
-  imports: [CommonModule, RouterLink, HistorialClinicoComponent],
+  imports: [CommonModule, RouterLink, HistorialClinicoComponent, FormatoDniPipe],
   templateUrl: './usuarios.component.html',
   styleUrl: './usuarios.component.css',
 })
