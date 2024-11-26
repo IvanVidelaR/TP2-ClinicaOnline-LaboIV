@@ -33,13 +33,13 @@ export class EstadisticasComponent{
     {
       imagen: '/estadisticas/turnos-solicitados.png',
       titulo: 'Turnos solicitados',
-      mensaje: 'Detalle de la cantidad de turnos solicitados por cada médico dentro de un período de tiempo específico.',
+      mensaje: 'Detalle de la cantidad de turnos solicitados a un médico dentro de un período de tiempo específico.',
       routerLink: '/estadisticas/turnos-solicitados'
     },
     {
       imagen: '/estadisticas/turnos-finalizados.png',
       titulo: 'Turnos finalizados',
-      mensaje: 'Detalle de la cantidad de turnos finalizador por cada médico dentro de un período de tiempo específico.',
+      mensaje: 'Detalle de la cantidad de turnos finalizados por cada médico dentro de un período de tiempo específico.',
       routerLink: '/estadisticas/turnos-finalizados'
     }
   ]

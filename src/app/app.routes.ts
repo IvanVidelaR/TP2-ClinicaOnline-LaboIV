@@ -120,6 +120,13 @@ export const routes: Routes = [
                 data: { animation: 'DayAppointmentPage' }
             },
             {
+                path: 'estadisticas/turnos-solicitados',
+                loadComponent: () => 
+                    import('./pages/estadisticas/turnos-solicitados/turnos-solicitados.component').then((m) => m.TurnosSolicitadosComponent),
+                canActivate: [noAuthAdminGuard],
+                data: { animation: 'RequestAppointmentPage' }
+            },
+            {
                 path: 'error',
                 loadComponent: () => 
                     import('./pages/error/error.component').then((m) => m.ErrorComponent),

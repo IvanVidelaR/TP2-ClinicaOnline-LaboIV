@@ -1,0 +1,47 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.canvas-container {
+  width: 500px;
+}
+
+.date-range-container {
+  background: linear-gradient(135deg, #f9f9f9, #e9ecef);
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.date-range-container h3 {
+  color: #495057;
+  font-weight: bold;
+}
+
+.date-range-container .form-control {
+  border: 2px solid #6c757d;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.date-range-container .form-control:focus {
+  border-color: #0d6efd;
+  box-shadow: 0px 0px 10px rgba(13, 110, 253, 0.25);
+}
+
+.date-range-container .btn {
+  font-size: 1.2rem;
+  padding: 10px 20px;
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+  color: #fff;
+  border-radius: 10px;
+}
+
+.date-range-container .btn:hover {
+  background-color: #0056b3;
+  border-color: #004085;
+}
