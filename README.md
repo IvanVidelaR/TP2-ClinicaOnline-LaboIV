@@ -167,16 +167,31 @@ y administración de la misma.
 ### Mi Perfil (Especialista)
 ![Mi Perfil Especialista](./public/readme-md/mi-perfil-especialista.png)
 
+### Mi Perfil (Paciente)
+![Mi Perfil Paciente](./public/readme-md/mi-perfil-paciente.png)
+
 ### Gestionar Horarios del Especialista
 ![Gestionar Horarios](./public/readme-md/gestionar-horarios.png)
 
-## Sección usuarios (Admin)
+## Gestión de usuarios (Admininistrador)
 
 ### Usuarios Administrados
 ![Usuarios](./public/readme-md/usuarios.png)
 
 ### Generar un Usuario 
 ![Generar Usuario](./public/readme-md/generar-usuario.png)
+
+### Elección de Usuarios
+![Usuarios Elección Admin](./public/readme-md/usuarios-eleccion-admin.png)
+![Usuarios Elección Especialista](./public/readme-md/usuarios-eleccion-especialista.png)
+![Usuarios Elección Paciente](./public/readme-md/usuarios-eleccion-paciente.png)
+
+### Descarga de Datos de Usuarios
+
+#### Datos generales: 
+![Usuarios Descargar Excel](./public/readme-md/usuarios-descargar-excel-datos.png)
+#### Datos individuales del paciente seleccionado: 
+![Usuarios Descargar Excel](./public/readme-md/usuarios-descargar-excel-turnos-tomados.png)
 
 ## Solicitar un Turno
 
@@ -193,6 +208,9 @@ y administración de la misma.
 ![Solicitar Turno Paciente 1](./public/readme-md/solicitar-turno-2.png)
 
 ## Gestión de Turnos
+
+### Tabla de Turnos
+![Tabla Turnos](./public/readme-md/tabla-turnos.png)
 
 ### Cancelar un Turno (Admin, Paciente y Especialista)
 ![Cancelar Turno](./public/readme-md/cancelar-turno.png)
@@ -224,12 +242,39 @@ y administración de la misma.
 ### Finalizar un Turno (Especialista)
 ![Finalizar Turno](./public/readme-md/finalizar-turno.png)
 
+## Historia Clínica
 
+### Visualización Historia Clínica (Parte 1)
+![Historia Clínica 1](./public/readme-md/historia-clinica-perfil-paciente-1.png)
 
+### Visualización Historia Clínica (Parte 2)
+![Historia Clínica 2](./public/readme-md/historia-clinica-perfil-paciente-2.png)
 
+### Exportar Informe en PDF
+![Historia Clínica Informe PDF](./public/readme-md/historia-clinica-perfil-paciente-informe-pdf.png)
 
+## Estadísticas y Gráficos
 
+### Log de Ingresos al Sistema
+![Log Ingresos 1](./public/readme-md/estadisticas-log-ingresos-admin-1.png)
+![Log Ingresos 2](./public/readme-md/estadisticas-log-ingresos-admin-2.png)
+![Log Ingresos Excel](./public/readme-md/estadisticas-log-ingresos-admin-excel.png)
 
+### Cantidad de Turnos por Especialidad
+![Turnos Especialidad Gráfico](./public/readme-md/estadisticas-cant-turnos-especialidad-admin.png)
+![Turnos Especialidad PDF](./public/readme-md/estadisticas-cant-turnos-especialidad-admin-pdf.png)
+
+### Cantidad de Turnos por Día
+![Turnos Día Gráfico](./public/readme-md/estadisticas-cant-turnos-dia-admin.png)
+![Turnos Día PDF](./public/readme-md/estadisticas-cant-turnos-dia-admin-pdf.png)
+
+### Cantidad de Turnos solicitados en un lapso de tiempo
+![Turnos Solicitados Gráfico](./public/readme-md/estadisticas-cant-turnos-solicitados-admin.png)
+![Turnos Solicitados PDF](./public/readme-md/estadisticas-cant-turnos-solicitados-admin-pdf.png)
+
+### Cantidad de Turnos finalizados en un lapso de tiempo
+![Turnos Finalizados Gráfico](./public/readme-md/estadisticas-cant-turnos-finalizados-admin.png)
+![Turnos Finalizados PDF](./public/readme-md/estadisticas-cant-turnos-finalizados-admin-pdf.png)
 
 
 
